@@ -1,0 +1,1 @@
+del *.~??? *.obj *.tds *.orig *.ddp *.res *.dsk
