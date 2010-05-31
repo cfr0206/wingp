@@ -18,58 +18,50 @@ object frmGPSpooler: TfrmGPSpooler
     Top = 0
     Width = 666
     Height = 389
-    ActivePage = TabSheet2
+    ActivePage = tshJobs
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object tshJobs: TTabSheet
       Caption = 'Jobs'
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 658
+        Height = 41
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        object btnUpdateJobList: TButton
+          Left = 8
+          Top = 8
+          Width = 75
+          Height = 25
+          Caption = 'Update'
+          TabOrder = 0
+          OnClick = btnUpdateJobListClick
+        end
+      end
+      object pnlJobs: TScrollBox
+        Left = 0
+        Top = 41
+        Width = 658
+        Height = 320
+        VertScrollBar.Smooth = True
+        Align = alClient
+        TabOrder = 1
+      end
     end
     object TabSheet2: TTabSheet
       Caption = 'Settings'
       ImageIndex = 1
-      object Printers: TGroupBox
+      object GroupBox1: TGroupBox
         Left = 0
         Top = 8
-        Width = 249
-        Height = 217
-        Caption = 'Printers'
-        TabOrder = 0
-        object lbPrinterList: TListBox
-          Left = 2
-          Top = 41
-          Width = 245
-          Height = 174
-          Align = alClient
-          ItemHeight = 13
-          TabOrder = 0
-        end
-        object Panel1: TPanel
-          Left = 2
-          Top = 15
-          Width = 245
-          Height = 26
-          Align = alTop
-          BevelOuter = bvNone
-          TabOrder = 1
-          object btnRefresh: TButton
-            Left = 0
-            Top = 0
-            Width = 75
-            Height = 25
-            Caption = 'Refresh'
-            TabOrder = 0
-            OnClick = btnRefreshClick
-          end
-        end
-      end
-      object GroupBox1: TGroupBox
-        Left = 264
-        Top = 16
         Width = 185
         Height = 105
         Caption = 'Environment Variables'
-        TabOrder = 1
+        TabOrder = 0
         object btnSetEnv: TButton
           Left = 6
           Top = 16
