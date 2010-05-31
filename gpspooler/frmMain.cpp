@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "frmMain.h"
+#include "frmJobFrame.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "trayicon"
@@ -11,25 +12,55 @@
 TfrmGPSpooler *frmGPSpooler;
 //---------------------------------------------------------------------------
 __fastcall TfrmGPSpooler::TfrmGPSpooler(TComponent* Owner)
-        : TForm(Owner)
+    : TForm(Owner),
+      job_list(NULL)
 {
-PageControl1->ActivePage=tshJobs;
+    PageControl1->ActivePage=tshJobs;
     work_folder=ExtractFilePath(Application->ExeName);
     jobs_folder=work_folder+"jobs\\";
 
     check_jobs_folder();
-    get_printers(lbPrinterList->Items);
+    get_job_list();
+    fill_job_list();
+
+    printers = new TStringList();
+    get_printers(printers);
+
 }
-//---------------------------------------------------------------------------
-void __fastcall TfrmGPSpooler::btnRefreshClick(TObject *Sender)
+
+__fastcall TfrmGPSpooler::~TfrmGPSpooler()
 {
-    lbPrinterList->Clear();
-    get_printers(lbPrinterList->Items);
+    delete printers;
 }
 //---------------------------------------------------------------------------
+void TfrmGPSpooler::get_job_list()
+{
+    if (frmJobs)//delete job list
+    {
+        delete job_list;
+        job_list=NULL;
+    }
+    job_list = new TFileListBox(this);
+    job_list->Parent=this;
+    job_list->Visible=false;
+    job_list->Directory=jobs_folder;
+    job_list->Mask="*.job";
+    job_list->Update();
+    for (int i=0; i<job_list->Items->Count; i++)
+    {
+        AnsiString fn=job_list->Items->operator [](i);
+        TStringList *sl=new TStringList();
+        sl->LoadFromFile(fn);
+        job_list->Items->Objects[i]=sl;
+    }
+}
+
 void TfrmGPSpooler::get_printers(TStrings * s)
 {
 #define MAX_PRINTERS 256
+
+    s->Clear();
+
     DWORD              dwBytesNeeded=0,dwReturned=0;
     PRINTER_INFO_4 *   pinfo4 = NULL;
     int                previous[MAX_PRINTERS], i =0;
@@ -147,5 +178,32 @@ void TfrmGPSpooler::check_jobs_folder()
 {
     if (!DirectoryExists(jobs_folder))
         CreateDir(jobs_folder);
+}
+
+void __fastcall TfrmGPSpooler::btnUpdateJobListClick(TObject *Sender)
+{
+    fill_job_list();
+}
+//---------------------------------------------------------------------------
+void TfrmGPSpooler::fill_job_list()
+{
+//delete all JobFrames
+    TControl *tmp;
+    for(int i=pnlJobs->ControlCount-1; i>=0; i--)
+    {
+        tmp = pnlJobs->Controls[i];
+        if (dynamic_cast<TfrmJobs *>(tmp) != NULL)
+        {
+            delete (TfrmJobs *)tmp;
+        }
+    }
+
+
+    for(int i=0; i<job_list->Items->Count; i++)
+    {
+        frmJobs = new TfrmJobs(pnlJobs, job_list->Items->operator [](i));
+        frmJobs->Parent=pnlJobs;
+    }
+
 }
 
