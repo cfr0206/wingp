@@ -4,206 +4,216 @@
 #pragma hdrstop
 
 #include "frmMain.h"
-#include "frmJobFrame.h"
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "trayicon"
 #pragma resource "*.dfm"
 TfrmGPSpooler *frmGPSpooler;
 //---------------------------------------------------------------------------
-__fastcall TfrmGPSpooler::TfrmGPSpooler(TComponent* Owner)
-    : TForm(Owner),
-      job_list(NULL)
-{
-    PageControl1->ActivePage=tshJobs;
-    work_folder=ExtractFilePath(Application->ExeName);
-    jobs_folder=work_folder+"jobs\\";
-
+__fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
+    : TForm ( Owner ),
+      job_list ( NULL )
+    {
+    PageControl1->ActivePage = tshJobs;
+    pnlJobs->DoubleBuffered = true;
+    work_folder = ExtractFilePath ( Application->ExeName );
+    jobs_folder = work_folder + "jobs\\";
+    xml_folder = work_folder + "xml\\";
+    lbEnv1->Caption = "GPSPOOLERJOBS = " + jobs_folder;
+    lbEnv2->Caption = "STP_DATA_PATH = " + xml_folder;
+    job_list = new TFileListBox ( this );
+    job_list->Parent = this;
+    job_list->Visible = false;
     check_jobs_folder();
-    get_job_list();
+    //get_job_list();
     fill_job_list();
-
     printers = new TStringList();
-    get_printers(printers);
-
-}
+    get_printers ( printers );
+    }
 
 __fastcall TfrmGPSpooler::~TfrmGPSpooler()
-{
+    {
     delete printers;
-}
+    }
 //---------------------------------------------------------------------------
 void TfrmGPSpooler::get_job_list()
-{
-    if (frmJobs)//delete job list
     {
-        delete job_list;
-        job_list=NULL;
-    }
-    job_list = new TFileListBox(this);
-    job_list->Parent=this;
-    job_list->Visible=false;
-    job_list->Directory=jobs_folder;
-    job_list->Mask="*.job";
+    job_list->Clear();
+    job_list->Directory = jobs_folder;
+    job_list->Mask = "*.job";
     job_list->Update();
-    for (int i=0; i<job_list->Items->Count; i++)
-    {
-        AnsiString fn=job_list->Items->operator [](i);
-        TStringList *sl=new TStringList();
-        sl->LoadFromFile(fn);
-        job_list->Items->Objects[i]=sl;
     }
-}
 
-void TfrmGPSpooler::get_printers(TStrings * s)
-{
+void TfrmGPSpooler::get_printers ( TStrings * s )
+    {
 #define MAX_PRINTERS 256
-
     s->Clear();
-
-    DWORD              dwBytesNeeded=0,dwReturned=0;
+    DWORD              dwBytesNeeded = 0, dwReturned = 0;
     PRINTER_INFO_4 *   pinfo4 = NULL;
-    int                previous[MAX_PRINTERS], i =0;
-
-    for (i=0; i<MAX_PRINTERS; i++) {
-        previous[i]=0;
-    }
-    while ( !EnumPrinters (PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL,
-                           4, (LPBYTE) pinfo4, dwBytesNeeded, &dwBytesNeeded,
-                           &dwReturned) )
-    {
-        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+    int                previous[MAX_PRINTERS], i = 0;
+    for ( i = 0; i < MAX_PRINTERS; i++ )
         {
-            if (pinfo4) LocalFree (pinfo4);
-            pinfo4 = (PRINTER_INFO_4 *) LocalAlloc (LPTR, dwBytesNeeded);
+        previous[i] = 0;
         }
-        else
+    while ( !EnumPrinters ( PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL,
+                            4, ( LPBYTE ) pinfo4, dwBytesNeeded, &dwBytesNeeded,
+                            &dwReturned ) )
         {
+        if ( GetLastError() == ERROR_INSUFFICIENT_BUFFER )
+            {
+            if ( pinfo4 )
+                LocalFree ( pinfo4 );
+            pinfo4 = ( PRINTER_INFO_4 * ) LocalAlloc ( LPTR, dwBytesNeeded );
+            }
+        else
+            {
             //errlog("EnumPrinters failed: %d\n",(int)GetLastError());
             return;
+            }
         }
-    }
-
-
     HANDLE hPrinter;
     PRINTER_INFO_2 *pi2;
     DWORD cbNeeded;
-    for (i = 0; i < (int)dwReturned; i++)
-    {
-        if (OpenPrinter(pinfo4[i].pPrinterName, &hPrinter, NULL))
+    for ( i = 0; i < ( int ) dwReturned; i++ )
         {
-            GetPrinter(hPrinter,2,(LPBYTE)&pi2,sizeof(pi2),&cbNeeded);
-            pi2=(PRINTER_INFO_2 *)LocalAlloc(LPTR,cbNeeded);
-            if (GetPrinter(hPrinter,2,(LPBYTE)pi2,cbNeeded,&cbNeeded))
+        if ( OpenPrinter ( pinfo4[i].pPrinterName, &hPrinter, NULL ) )
             {
-                s->Add(pi2->pPrinterName);
+            GetPrinter ( hPrinter, 2, ( LPBYTE ) &pi2, sizeof ( pi2 ), &cbNeeded );
+            pi2 = ( PRINTER_INFO_2 * ) LocalAlloc ( LPTR, cbNeeded );
+            if ( GetPrinter ( hPrinter, 2, ( LPBYTE ) pi2, cbNeeded, &cbNeeded ) )
+                {
+                s->Add ( pi2->pPrinterName );
+                }
+            if ( pi2 )
+                LocalFree ( pi2 );
+            ClosePrinter ( hPrinter );
             }
-            if (pi2) LocalFree(pi2);
-
-            ClosePrinter(hPrinter);
         }
     }
 
-}
-
-void __fastcall TfrmGPSpooler::btnSetEnvClick(TObject *Sender)
-{
+void __fastcall TfrmGPSpooler::btnSetEnvClick ( TObject *Sender )
+    {
     delete_key_env();
     make_key_env();
-}
+    }
 //---------------------------------------------------------------------------
 
-void __fastcall TfrmGPSpooler::btnDelEnvClick(TObject *Sender)
-{
+void __fastcall TfrmGPSpooler::btnDelEnvClick ( TObject *Sender )
+    {
     delete_key_env();
-}
+    }
 //---------------------------------------------------------------------------
 void TfrmGPSpooler::delete_key_env()
-{
-    TRegistry * reg = new TRegistry(KEY_ALL_ACCESS);
+    {
+    TRegistry * reg = new TRegistry ( KEY_ALL_ACCESS );
     try
-    {
-
+        {
         reg->RootKey = HKEY_LOCAL_MACHINE;
-        if (reg->OpenKey("\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment\\", false));
-        {
-            reg->DeleteValue("GPSPOOLERJOBS");
+        if ( reg->OpenKey ( "\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment\\", false ) )
+            ;
+            {
+            reg->DeleteValue ( "GPSPOOLERJOBS" );
+            reg->DeleteValue ( "STP_DATA_PATH" );
             reg->CloseKey();
-        }
-
+            }
         reg->RootKey = HKEY_CURRENT_USER;
-        if (reg->OpenKey("\\Environment\\", false))
-        {
-            reg->DeleteValue("GPSPOOLERJOBS");
+        if ( reg->OpenKey ( "\\Environment\\", false ) )
+            {
+            reg->DeleteValue ( "GPSPOOLERJOBS" );
+            reg->DeleteValue ( "STP_DATA_PATH" );
             reg->CloseKey();
+            }
         }
-    }
     __finally
-    {
+        {
         delete reg;
+        }
+    update_env();
     }
-}
 
 void TfrmGPSpooler::make_key_env()
-{
-    TRegistry * reg = new TRegistry(KEY_ALL_ACCESS);
+    {
+    TRegistry * reg = new TRegistry ( KEY_ALL_ACCESS );
     try
-    {
-        if (rbSystem->Checked)
         {
+        if ( rbSystem->Checked )
+            {
             reg->RootKey = HKEY_LOCAL_MACHINE;
-            if (reg->OpenKey("\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", true));
-            {
-                reg->WriteString("GPSPOOLERJOBS",jobs_folder);
+            if ( reg->OpenKey ( "\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", true ) )
+                ;
+                {
+                reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
+                reg->WriteString ( "STP_DATA_PATH", xml_folder );
                 reg->CloseKey();
+                }
             }
-        }
         else
-        {
-            reg->RootKey = HKEY_CURRENT_USER;
-            if (reg->OpenKey("\\Environment", true))
             {
-                reg->WriteString("GPSPOOLERJOBS",jobs_folder);
+            reg->RootKey = HKEY_CURRENT_USER;
+            if ( reg->OpenKey ( "\\Environment", true ) )
+                {
+                reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
+                reg->WriteString ( "STP_DATA_PATH", xml_folder );
                 reg->CloseKey();
+                }
             }
         }
-    }
     __finally
-    {
-        delete reg;
-    }
-}
-
-void TfrmGPSpooler::check_jobs_folder()
-{
-    if (!DirectoryExists(jobs_folder))
-        CreateDir(jobs_folder);
-}
-
-void __fastcall TfrmGPSpooler::btnUpdateJobListClick(TObject *Sender)
-{
-    fill_job_list();
-}
-//---------------------------------------------------------------------------
-void TfrmGPSpooler::fill_job_list()
-{
-//delete all JobFrames
-    TControl *tmp;
-    for(int i=pnlJobs->ControlCount-1; i>=0; i--)
-    {
-        tmp = pnlJobs->Controls[i];
-        if (dynamic_cast<TfrmJobs *>(tmp) != NULL)
         {
-            delete (TfrmJobs *)tmp;
+        delete reg;
         }
+    update_env();
     }
-
-
-    for(int i=0; i<job_list->Items->Count; i++)
+void TfrmGPSpooler::update_env()
     {
-        frmJobs = new TfrmJobs(pnlJobs, job_list->Items->operator [](i));
-        frmJobs->Parent=pnlJobs;
+    unsigned long dwReturnValue;
+    SendMessageTimeout ( HWND_BROADCAST, WM_SETTINGCHANGE, 0,
+                         ( LPARAM ) "Environment", SMTO_ABORTIFHUNG,
+                         5000, &dwReturnValue );
+    }
+void TfrmGPSpooler::check_jobs_folder()
+    {
+    if ( !DirectoryExists ( jobs_folder ) )
+        CreateDir ( jobs_folder );
     }
 
-}
+void TfrmGPSpooler::fill_job_list()
+    {
+    //pnlJobs->DisableAutoRange();
+    get_job_list();
+    for ( int i = 0; i < job_list->Items->Count; i++ )
+        {
+        if ( get_job ( job_list->Items->operator [] ( i ) ) == NULL )
+            frmJobs = new TfrmJobs ( pnlJobs, job_list->Items->operator [] ( i ) );
+        frmJobs->Parent = pnlJobs;
+        }
+    //pnlJobs->EnableAutoRange();
+    }
+
+
+//http://sources.ru/delphi/system/jobs_information_from_printer_spooler.shtml
+//http://asm.netcode.ru/cpp/?lang=&katID=6&skatID=64&artID=2714
+//!http://www.tdoc.ru/c/cpp-sources/printer/kak-uznat-sostoyanie-printera-a-tak-zhe-zadanij-na-printere.html
+TfrmJobs * TfrmGPSpooler::get_job ( AnsiString jn )
+    {
+    TControl *tmp;
+    TfrmJobs * job;
+    for ( int i = pnlJobs->ControlCount - 1; i >= 0; i-- )
+        {
+        tmp = pnlJobs->Controls[i];
+        job = dynamic_cast<TfrmJobs *> ( tmp );
+        if ( job != NULL )
+            {
+            if ( job->get_job_name() == jn )
+                return job;
+            }
+        }
+    return NULL;
+    }
+void __fastcall TfrmGPSpooler::Timer1Timer ( TObject *Sender )
+    {
+    fill_job_list();
+    }
+//---------------------------------------------------------------------------
 

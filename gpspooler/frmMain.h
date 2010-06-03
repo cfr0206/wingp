@@ -12,7 +12,7 @@
 #include <ExtCtrls.hpp>
 #include <Registry.hpp>
 #include <FileCtrl.hpp>
-
+#include "frmJobFrame.h"
 //---------------------------------------------------------------------------
 class TfrmGPSpooler : public TForm
 {
@@ -27,14 +27,19 @@ __published:	// IDE-managed Components
     TRadioButton *rbSystem;
     TButton *btnDelEnv;
         TPanel *Panel1;
-        TButton *btnUpdateJobList;
         TScrollBox *pnlJobs;
+        TButton *btnUpdate;
+        TTimer *Timer1;
+        TPanel *Panel2;
+        TLabel *lbEnv2;
+        TLabel *lbEnv1;
     void __fastcall btnSetEnvClick(TObject *Sender);
     void __fastcall btnDelEnvClick(TObject *Sender);
-        void __fastcall btnUpdateJobListClick(TObject *Sender);
+        void __fastcall Timer1Timer(TObject *Sender);
 protected:	// User declarations
     AnsiString work_folder;
     AnsiString jobs_folder;
+    AnsiString xml_folder;
     TStringList *printers;
     TFileListBox *job_list;
 
@@ -44,7 +49,8 @@ protected:	// User declarations
     void make_key_env();
     void get_job_list();
     void fill_job_list();
-
+    TfrmJobs * get_job(AnsiString jn);
+    void update_env();
 public:		// User declarations
     __fastcall TfrmGPSpooler(TComponent* Owner);
     __fastcall ~TfrmGPSpooler();    
