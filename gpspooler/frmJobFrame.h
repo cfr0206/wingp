@@ -26,18 +26,25 @@ __published:	// IDE-managed Components
         TLabeledEdit *edCopies;
         TUpDown *udCopies;
         TCheckBox *chbDelAfterPrinting;
+        TProgressBar *pbPrinting;
         void __fastcall btnSendToPrinterClick(TObject *Sender);
         void __fastcall edCopiesKeyPress(TObject *Sender, char &Key);
+        void __fastcall BitBtn1Click(TObject *Sender);
 private:	// User declarations
+        static int count;
         TStringList *param_list;
         bool send_to_printer();
-        AnsiString name, file, printer;
+        AnsiString name, file, printer, job;
         int copies;
         int get_user_copies();
+        int fin,fin_job;
+        void lock_file();
+        void unlock_file();
 public:		// User declarations
-        static int count;
+        AnsiString get_job_name();
         __fastcall TfrmJobs(TComponent* Owner, AnsiString fn);
         __fastcall ~TfrmJobs();
+
 };
 int TfrmJobs::count=0;
 //---------------------------------------------------------------------------

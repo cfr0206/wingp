@@ -2,7 +2,7 @@ object frmJobs: TfrmJobs
   Left = 0
   Top = 0
   Width = 449
-  Height = 65
+  Height = 73
   AutoSize = True
   Color = clMoneyGreen
   ParentColor = False
@@ -11,7 +11,7 @@ object frmJobs: TfrmJobs
     Left = 0
     Top = 0
     Width = 449
-    Height = 65
+    Height = 73
     Align = alTop
     BevelInner = bvLowered
     ParentColor = True
@@ -20,7 +20,7 @@ object frmJobs: TfrmJobs
       Left = 248
       Top = 2
       Width = 199
-      Height = 61
+      Height = 69
       Align = alRight
       BevelOuter = bvNone
       ParentColor = True
@@ -49,13 +49,14 @@ object frmJobs: TfrmJobs
         Height = 25
         Caption = 'Delete'
         TabOrder = 2
+        OnClick = BitBtn1Click
       end
     end
     object Panel3: TPanel
       Left = 2
       Top = 2
       Width = 246
-      Height = 61
+      Height = 69
       Align = alClient
       BevelOuter = bvNone
       ParentColor = True
@@ -111,6 +112,16 @@ object frmJobs: TfrmJobs
         Checked = True
         State = cbChecked
         TabOrder = 2
+      end
+      object pbPrinting: TProgressBar
+        Left = 0
+        Top = 59
+        Width = 246
+        Height = 10
+        Align = alBottom
+        Min = 0
+        Max = 100
+        TabOrder = 3
       end
     end
   end
