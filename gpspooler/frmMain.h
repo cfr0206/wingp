@@ -22,17 +22,15 @@ __published:	// IDE-managed Components
         TTabSheet *tshJobs;
     TTabSheet *TabSheet2;
     TGroupBox *GroupBox1;
-    TButton *btnSetEnv;
-    TRadioButton *rbCurrentUser;
-    TRadioButton *rbSystem;
-    TButton *btnDelEnv;
         TPanel *Panel1;
         TScrollBox *pnlJobs;
-        TButton *btnUpdate;
+        TPanel *Panel3;
+        TButton *btnSetEnv;
+        TButton *btnDelEnv;
+        TRadioButton *rbSystem;
+        TRadioButton *rbCurrentUser;
+        TMemo *mmEnv;
         TTimer *Timer1;
-        TPanel *Panel2;
-        TLabel *lbEnv2;
-        TLabel *lbEnv1;
     void __fastcall btnSetEnvClick(TObject *Sender);
     void __fastcall btnDelEnvClick(TObject *Sender);
         void __fastcall Timer1Timer(TObject *Sender);
@@ -40,8 +38,12 @@ protected:	// User declarations
     AnsiString work_folder;
     AnsiString jobs_folder;
     AnsiString xml_folder;
+    AnsiString temp_folder;
+    AnsiString gprint_folder;    
     TStringList *printers;
     TFileListBox *job_list;
+
+    HANDLE hFolderWatch;
 
     void check_jobs_folder();
     void get_printers(TStrings *);
@@ -49,6 +51,7 @@ protected:	// User declarations
     void make_key_env();
     void get_job_list();
     void fill_job_list();
+    void delete_hiden_job();
     TfrmJobs * get_job(AnsiString jn);
     void update_env();
 public:		// User declarations

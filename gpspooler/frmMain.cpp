@@ -20,20 +20,34 @@ __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     work_folder = ExtractFilePath ( Application->ExeName );
     jobs_folder = work_folder + "jobs\\";
     xml_folder = work_folder + "xml\\";
-    lbEnv1->Caption = "GPSPOOLERJOBS = " + jobs_folder;
-    lbEnv2->Caption = "STP_DATA_PATH = " + xml_folder;
+    temp_folder = work_folder + "temp\\";
+    gprint_folder = work_folder;
+
+    mmEnv->Lines->Add("GPSPOOLERJOBS\t= " + jobs_folder);
+    mmEnv->Lines->Add("STP_DATA_PATH\t= " + xml_folder);
+    mmEnv->Lines->Add("GPRINT_TEMP\t= " + temp_folder);
+    mmEnv->Lines->Add("GPRINT_BASE\t= " + gprint_folder);
+    mmEnv->Lines->Add("--------------------------------------------------------------");
+    mmEnv->Lines->Add("After installation, restart the applications using gutenprint.");
+
     job_list = new TFileListBox ( this );
     job_list->Parent = this;
     job_list->Visible = false;
+
     check_jobs_folder();
     //get_job_list();
     fill_job_list();
     printers = new TStringList();
     get_printers ( printers );
+
+    hFolderWatch = FindFirstChangeNotification((LPCTSTR) jobs_folder.c_str(),
+                                                FALSE,
+                                                FILE_NOTIFY_CHANGE_FILE_NAME);
     }
 
 __fastcall TfrmGPSpooler::~TfrmGPSpooler()
     {
+    FindCloseChangeNotification(hFolderWatch);
     delete printers;
     }
 //---------------------------------------------------------------------------
@@ -115,6 +129,8 @@ void TfrmGPSpooler::delete_key_env()
             {
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
+            reg->DeleteValue ( "GPRINT_BASE" );
+            reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
             }
         reg->RootKey = HKEY_CURRENT_USER;
@@ -122,6 +138,8 @@ void TfrmGPSpooler::delete_key_env()
             {
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
+            reg->DeleteValue ( "GPRINT_BASE" );
+            reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
             }
         }
@@ -145,6 +163,8 @@ void TfrmGPSpooler::make_key_env()
                 {
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
+                reg->WriteString ( "GPRINT_BASE", gprint_folder );
+                reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
                 }
             }
@@ -155,6 +175,8 @@ void TfrmGPSpooler::make_key_env()
                 {
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
+                reg->WriteString ( "GPRINT_BASE", gprint_folder );
+                reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
                 }
             }
@@ -176,6 +198,8 @@ void TfrmGPSpooler::check_jobs_folder()
     {
     if ( !DirectoryExists ( jobs_folder ) )
         CreateDir ( jobs_folder );
+    if ( !DirectoryExists ( temp_folder ) )
+        CreateDir ( temp_folder );
     }
 
 void TfrmGPSpooler::fill_job_list()
@@ -190,7 +214,21 @@ void TfrmGPSpooler::fill_job_list()
         }
     //pnlJobs->EnableAutoRange();
     }
-
+void TfrmGPSpooler::delete_hiden_job()
+{
+    TControl *tmp;
+    TfrmJobs * job;
+    for ( int i = pnlJobs->ControlCount - 1; i >= 0; i-- )
+        {
+        tmp = pnlJobs->Controls[i];
+        job = dynamic_cast<TfrmJobs *> ( tmp );
+        if ( job != NULL )
+            {
+            if ( job->Visible == false )
+                delete job;
+            }
+        }
+}
 
 //http://sources.ru/delphi/system/jobs_information_from_printer_spooler.shtml
 //http://asm.netcode.ru/cpp/?lang=&katID=6&skatID=64&artID=2714
@@ -214,6 +252,8 @@ TfrmJobs * TfrmGPSpooler::get_job ( AnsiString jn )
 void __fastcall TfrmGPSpooler::Timer1Timer ( TObject *Sender )
     {
     fill_job_list();
+    delete_hiden_job();
     }
 //---------------------------------------------------------------------------
+
 
