@@ -139,7 +139,7 @@ void __fastcall TfrmJobs::BitBtn1Click ( TObject *Sender )
     unlock_file();
     DeleteFile ( file );
     DeleteFile ( file + ".job" );
-    delete this;
+    Visible=false;
     }
 //---------------------------------------------------------------------------
 
