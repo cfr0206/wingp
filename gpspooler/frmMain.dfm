@@ -1,6 +1,6 @@
 object frmGPSpooler: TfrmGPSpooler
-  Left = 419
-  Top = 189
+  Left = 523
+  Top = 220
   Width = 674
   Height = 423
   Caption = 'GPSpooler'
@@ -128,8 +128,17 @@ object frmGPSpooler: TfrmGPSpooler
     Top = 328
   end
   object Timer1: TTimer
+    Enabled = False
     OnTimer = Timer1Timer
-    Left = 536
+    Left = 528
+    Top = 328
+  end
+  object IPCServer: TServerSocket
+    Active = True
+    Port = 37051
+    ServerType = stNonBlocking
+    OnClientRead = IPCServerClientRead
+    Left = 432
     Top = 328
   end
 end

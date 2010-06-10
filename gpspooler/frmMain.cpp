@@ -4,7 +4,7 @@
 #pragma hdrstop
 
 #include "frmMain.h"
-
+#include "globaldef.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "trayicon"
@@ -17,16 +17,20 @@ __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     {
     PageControl1->ActivePage = tshJobs;
     pnlJobs->DoubleBuffered = true;
+    exe_name = Application->ExeName;
     work_folder = ExtractFilePath ( Application->ExeName );
     jobs_folder = work_folder + "jobs\\";
     xml_folder = work_folder + "xml\\";
     temp_folder = work_folder + "temp\\";
-    gprint_folder = work_folder;
+    exe_name_gprint = work_folder+"gprint.exe";
 
+    mmEnv->Lines->Add("Set Environment Variables:");
+    mmEnv->Lines->Add("--------------------------------------------------------------");
+    mmEnv->Lines->Add("GPSPOOLER\t= " + exe_name);
     mmEnv->Lines->Add("GPSPOOLERJOBS\t= " + jobs_folder);
     mmEnv->Lines->Add("STP_DATA_PATH\t= " + xml_folder);
     mmEnv->Lines->Add("GPRINT_TEMP\t= " + temp_folder);
-    mmEnv->Lines->Add("GPRINT_BASE\t= " + gprint_folder);
+    mmEnv->Lines->Add("GPRINT\t\t= " + exe_name_gprint);
     mmEnv->Lines->Add("--------------------------------------------------------------");
     mmEnv->Lines->Add("After installation, restart the applications using gutenprint.");
 
@@ -34,28 +38,25 @@ __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     job_list->Parent = this;
     job_list->Visible = false;
 
-    check_jobs_folder();
-    //get_job_list();
-    fill_job_list();
+    CheckJobFolder();
+
     printers = new TStringList();
     get_printers ( printers );
 
-    hFolderWatch = FindFirstChangeNotification((LPCTSTR) jobs_folder.c_str(),
-                                                FALSE,
-                                                FILE_NOTIFY_CHANGE_FILE_NAME);
+    job_list->Clear();
+    job_list->Directory = jobs_folder;
+    job_list->Mask = "*.job";
+
+    UpdateJobList();
     }
 
 __fastcall TfrmGPSpooler::~TfrmGPSpooler()
     {
-    FindCloseChangeNotification(hFolderWatch);
     delete printers;
     }
 //---------------------------------------------------------------------------
-void TfrmGPSpooler::get_job_list()
+void TfrmGPSpooler::ReadJobFolder()
     {
-    job_list->Clear();
-    job_list->Directory = jobs_folder;
-    job_list->Mask = "*.job";
     job_list->Update();
     }
 
@@ -127,18 +128,20 @@ void TfrmGPSpooler::delete_key_env()
         if ( reg->OpenKey ( "\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment\\", false ) )
             ;
             {
+            reg->DeleteValue ( "GPSPOOLER" );
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
-            reg->DeleteValue ( "GPRINT_BASE" );
+            reg->DeleteValue ( "GPRINT" );
             reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
             }
         reg->RootKey = HKEY_CURRENT_USER;
         if ( reg->OpenKey ( "\\Environment\\", false ) )
             {
+            reg->DeleteValue ( "GPSPOOLER" );
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
-            reg->DeleteValue ( "GPRINT_BASE" );
+            reg->DeleteValue ( "GPRINT" );
             reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
             }
@@ -161,9 +164,10 @@ void TfrmGPSpooler::make_key_env()
             if ( reg->OpenKey ( "\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", true ) )
                 ;
                 {
+                reg->WriteString ( "GPSPOOLER", exe_name );
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
-                reg->WriteString ( "GPRINT_BASE", gprint_folder );
+                reg->WriteString ( "GPRINT", exe_name_gprint );
                 reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
                 }
@@ -173,9 +177,10 @@ void TfrmGPSpooler::make_key_env()
             reg->RootKey = HKEY_CURRENT_USER;
             if ( reg->OpenKey ( "\\Environment", true ) )
                 {
+                reg->WriteString ( "GPSPOOLER", exe_name );
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
-                reg->WriteString ( "GPRINT_BASE", gprint_folder );
+                reg->WriteString ( "GPRINT", exe_name_gprint );
                 reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
                 }
@@ -194,7 +199,7 @@ void TfrmGPSpooler::update_env()
                          ( LPARAM ) "Environment", SMTO_ABORTIFHUNG,
                          5000, &dwReturnValue );
     }
-void TfrmGPSpooler::check_jobs_folder()
+void TfrmGPSpooler::CheckJobFolder()
     {
     if ( !DirectoryExists ( jobs_folder ) )
         CreateDir ( jobs_folder );
@@ -204,15 +209,7 @@ void TfrmGPSpooler::check_jobs_folder()
 
 void TfrmGPSpooler::fill_job_list()
     {
-    //pnlJobs->DisableAutoRange();
-    get_job_list();
-    for ( int i = 0; i < job_list->Items->Count; i++ )
-        {
-        if ( get_job ( job_list->Items->operator [] ( i ) ) == NULL )
-            frmJobs = new TfrmJobs ( pnlJobs, job_list->Items->operator [] ( i ) );
-        frmJobs->Parent = pnlJobs;
-        }
-    //pnlJobs->EnableAutoRange();
+
     }
 void TfrmGPSpooler::delete_hiden_job()
 {
@@ -225,7 +222,8 @@ void TfrmGPSpooler::delete_hiden_job()
         if ( job != NULL )
             {
             if ( job->Visible == false )
-                delete job;
+             //pnlJobs->RemoveControl(job);
+             delete job;
             }
         }
 }
@@ -249,11 +247,54 @@ TfrmJobs * TfrmGPSpooler::get_job ( AnsiString jn )
         }
     return NULL;
     }
-void __fastcall TfrmGPSpooler::Timer1Timer ( TObject *Sender )
-    {
-    fill_job_list();
-    delete_hiden_job();
-    }
+
+void TfrmGPSpooler::UpdateJobList()
+{
+//    pnlJobs->DisableAutoRange();
+    ReadJobFolder();
+    for ( int i = 0; i < job_list->Items->Count; i++ )
+        {
+        if ( get_job ( job_list->Items->operator [] ( i ) ) == NULL )
+            {
+            //frmJobs = new TfrmJobs ( pnlJobs, job_list->Items->operator [] ( i ) );
+            //frmJobs->Parent = pnlJobs;
+            AddJob(job_list->Items->operator [] ( i ) );
+            }
+
+        }
+
+
+//       pnlJobs->EnableAutoRange();
+}
+
+
+void __fastcall TfrmGPSpooler::Timer1Timer(TObject *Sender)
+{
+  UpdateJobList();
+}
 //---------------------------------------------------------------------------
+
+
+void __fastcall TfrmGPSpooler::IPCServerClientRead(TObject *Sender,
+      TCustomWinSocket *Socket)
+{
+AnsiString job=Socket->ReceiveText();
+AddJob(job);
+}
+//---------------------------------------------------------------------------
+
+void TfrmGPSpooler::AddJob(AnsiString job)
+{
+csLock->Enter();
+try
+{
+frmJobs = new TfrmJobs ( pnlJobs, job );
+frmJobs->Parent = pnlJobs;
+}
+__finally
+{
+       csLock->Leave();
+ }
+}
 
 

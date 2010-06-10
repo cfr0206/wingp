@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "frmJobFrame.h"
+#include "globaldef.h"
 #include <ctype.h>
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
@@ -18,9 +19,10 @@ __fastcall TfrmJobs::TfrmJobs ( TComponent* Owner, AnsiString fn )
     Name += AnsiString ( count );
     Top = count * Height;
     Align = alTop;
+
     param_list = new TStringList();
     param_list->LoadFromFile ( fn );
-    lbJobName->Caption = "file: " + param_list->Values["name"];
+    lbJobName->Caption = "file: " +  Utf8ToAnsi ( param_list->Values["name"] + "   " );
     udCopies->Position = param_list->Values["copies"].ToIntDef ( 1 );
     lbPrinterName->Caption = "printer: " + param_list->Values["printer"];
     file = param_list->Values["file"];
@@ -29,6 +31,7 @@ __fastcall TfrmJobs::TfrmJobs ( TComponent* Owner, AnsiString fn )
     name = param_list->Values["name"];
     job = fn;
     lock_file();
+    
     }
 __fastcall TfrmJobs::~TfrmJobs()
     {
@@ -63,9 +66,9 @@ void __fastcall TfrmJobs::btnSendToPrinterClick ( TObject *Sender )
         send_to_printer();
     if ( chbDelAfterPrinting->Checked )
         {
-        DeleteFile ( file );
+        unlock_file();
         DeleteFile ( file + ".job" );
-        //delete this;
+        DeleteFile ( file );
         Visible=false;
         }
     }
@@ -136,10 +139,20 @@ int TfrmJobs::get_user_copies()
     }
 void __fastcall TfrmJobs::BitBtn1Click ( TObject *Sender )
     {
+    csLock->Enter();
+try
+{
     unlock_file();
-    DeleteFile ( file );
     DeleteFile ( file + ".job" );
-    Visible=false;
+    DeleteFile ( file );
+    //Visible=false;
+    delete this;
+    }
+    __finally
+    {
+    csLock->Leave();
+
+    }
     }
 //---------------------------------------------------------------------------
 
