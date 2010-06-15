@@ -3,7 +3,6 @@
 
 Набросал основной рабочий поток.
 
-
 = Details =
 
 Печатаем из Photoshop-а. Выбираем "File->Export->PhotoGP".
