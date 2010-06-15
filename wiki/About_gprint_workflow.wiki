@@ -2,14 +2,15 @@
 
 = Introduction =
 
-Add your content here.
+Набросал основной рабочий поток.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Печатаем из Photoshop-а. Выбираем "File->Export->PhotoGP".
+  * Плагин photogp.8be создаёт в папке *GPRINT_TEMP* временный файл в формате *gpraw_t* и вызывает *GPRINT*, в качестве параметра передавая имя файла.
+  * *GPRINT* инициирует ядро gutenprint-а, запрашивает параметры печати и растрирует файл в *GPSPOOLERJOB*.
+  * После окончания растрирования, создается файл с описанием параметров печати.
+  * Вызывается *GPSPOOLER*, который посылает данные на принтер.
 
 http://wingp.googlecode.com/files/GPrint%20Workflow.png
