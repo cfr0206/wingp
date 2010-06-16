@@ -9,14 +9,19 @@
 #pragma package(smart_init)
 #pragma link "trayicon"
 #pragma resource "*.dfm"
+
 TfrmGPSpooler *frmGPSpooler;
 //---------------------------------------------------------------------------
 __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     : TForm ( Owner ),
       job_list ( NULL )
     {
+    log =lbLog;
+    LogM("Start");
+
     PageControl1->ActivePage = tshJobs;
     pnlJobs->DoubleBuffered = true;
+
     exe_name = Application->ExeName;
     work_folder = ExtractFilePath ( Application->ExeName );
     jobs_folder = work_folder + "jobs\\";
@@ -41,7 +46,7 @@ __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     CheckJobFolder();
 
     printers = new TStringList();
-    get_printers ( printers );
+    GetPrinterList ( printers );
 
     job_list->Clear();
     job_list->Directory = jobs_folder;
@@ -60,7 +65,7 @@ void TfrmGPSpooler::ReadJobFolder()
     job_list->Update();
     }
 
-void TfrmGPSpooler::get_printers ( TStrings * s )
+void TfrmGPSpooler::GetPrinterList ( TStrings * s )
     {
 #define MAX_PRINTERS 256
     s->Clear();
@@ -83,13 +88,15 @@ void TfrmGPSpooler::get_printers ( TStrings * s )
             }
         else
             {
-            //errlog("EnumPrinters failed: %d\n",(int)GetLastError());
+            LogE( AnsiString().printf("EnumPrinters failed: %d\n",(int)GetLastError()));
             return;
             }
         }
     HANDLE hPrinter;
     PRINTER_INFO_2 *pi2;
     DWORD cbNeeded;
+
+    LogM("Found Printers:");
     for ( i = 0; i < ( int ) dwReturned; i++ )
         {
         if ( OpenPrinter ( pinfo4[i].pPrinterName, &hPrinter, NULL ) )
@@ -99,6 +106,7 @@ void TfrmGPSpooler::get_printers ( TStrings * s )
             if ( GetPrinter ( hPrinter, 2, ( LPBYTE ) pi2, cbNeeded, &cbNeeded ) )
                 {
                 s->Add ( pi2->pPrinterName );
+                LogM("- "+AnsiString(pi2->pPrinterName));
                 }
             if ( pi2 )
                 LocalFree ( pi2 );
@@ -109,17 +117,17 @@ void TfrmGPSpooler::get_printers ( TStrings * s )
 
 void __fastcall TfrmGPSpooler::btnSetEnvClick ( TObject *Sender )
     {
-    delete_key_env();
-    make_key_env();
+    DeleteKeyEnv();
+    MakeKeyEnv();
     }
 //---------------------------------------------------------------------------
 
 void __fastcall TfrmGPSpooler::btnDelEnvClick ( TObject *Sender )
     {
-    delete_key_env();
+    DeleteKeyEnv();
     }
 //---------------------------------------------------------------------------
-void TfrmGPSpooler::delete_key_env()
+void TfrmGPSpooler::DeleteKeyEnv()
     {
     TRegistry * reg = new TRegistry ( KEY_ALL_ACCESS );
     try
@@ -150,10 +158,10 @@ void TfrmGPSpooler::delete_key_env()
         {
         delete reg;
         }
-    update_env();
+    MsgUpdateEnv();
     }
 
-void TfrmGPSpooler::make_key_env()
+void TfrmGPSpooler::MakeKeyEnv()
     {
     TRegistry * reg = new TRegistry ( KEY_ALL_ACCESS );
     try
@@ -162,7 +170,6 @@ void TfrmGPSpooler::make_key_env()
             {
             reg->RootKey = HKEY_LOCAL_MACHINE;
             if ( reg->OpenKey ( "\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", true ) )
-                ;
                 {
                 reg->WriteString ( "GPSPOOLER", exe_name );
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
@@ -190,9 +197,9 @@ void TfrmGPSpooler::make_key_env()
         {
         delete reg;
         }
-    update_env();
+    MsgUpdateEnv();
     }
-void TfrmGPSpooler::update_env()
+void TfrmGPSpooler::MsgUpdateEnv()
     {
     unsigned long dwReturnValue;
     SendMessageTimeout ( HWND_BROADCAST, WM_SETTINGCHANGE, 0,
@@ -202,36 +209,26 @@ void TfrmGPSpooler::update_env()
 void TfrmGPSpooler::CheckJobFolder()
     {
     if ( !DirectoryExists ( jobs_folder ) )
-        CreateDir ( jobs_folder );
-    if ( !DirectoryExists ( temp_folder ) )
-        CreateDir ( temp_folder );
-    }
-
-void TfrmGPSpooler::fill_job_list()
-    {
-
-    }
-void TfrmGPSpooler::delete_hiden_job()
-{
-    TControl *tmp;
-    TfrmJobs * job;
-    for ( int i = pnlJobs->ControlCount - 1; i >= 0; i-- )
         {
-        tmp = pnlJobs->Controls[i];
-        job = dynamic_cast<TfrmJobs *> ( tmp );
-        if ( job != NULL )
-            {
-            if ( job->Visible == false )
-             //pnlJobs->RemoveControl(job);
-             delete job;
-            }
+        CreateDir ( jobs_folder );
+        LogM("CreateDir("+jobs_folder+")");
         }
-}
+        else
+        LogM("DirectoryExists: "+jobs_folder);
+
+    if ( !DirectoryExists ( temp_folder ) )
+        {
+        CreateDir ( temp_folder );
+        LogM("CreateDir("+temp_folder +")");
+        }
+        else
+        LogM("DirectoryExists: "+temp_folder);
+    }
 
 //http://sources.ru/delphi/system/jobs_information_from_printer_spooler.shtml
 //http://asm.netcode.ru/cpp/?lang=&katID=6&skatID=64&artID=2714
 //!http://www.tdoc.ru/c/cpp-sources/printer/kak-uznat-sostoyanie-printera-a-tak-zhe-zadanij-na-printere.html
-TfrmJobs * TfrmGPSpooler::get_job ( AnsiString jn )
+TfrmJobs * TfrmGPSpooler::GetJobFrame ( AnsiString jn )
     {
     TControl *tmp;
     TfrmJobs * job;
@@ -250,28 +247,16 @@ TfrmJobs * TfrmGPSpooler::get_job ( AnsiString jn )
 
 void TfrmGPSpooler::UpdateJobList()
 {
-//    pnlJobs->DisableAutoRange();
     ReadJobFolder();
     for ( int i = 0; i < job_list->Items->Count; i++ )
         {
-        if ( get_job ( job_list->Items->operator [] ( i ) ) == NULL )
+        if ( GetJobFrame ( job_list->Items->operator [] ( i ) ) == NULL )
             {
-            //frmJobs = new TfrmJobs ( pnlJobs, job_list->Items->operator [] ( i ) );
-            //frmJobs->Parent = pnlJobs;
             AddJob(job_list->Items->operator [] ( i ) );
             }
-
         }
-
-
-//       pnlJobs->EnableAutoRange();
 }
-
-
-void __fastcall TfrmGPSpooler::Timer1Timer(TObject *Sender)
-{
-  UpdateJobList();
-}
+ 
 //---------------------------------------------------------------------------
 
 
@@ -286,6 +271,7 @@ AddJob(job);
 void TfrmGPSpooler::AddJob(AnsiString job)
 {
 csLock->Enter();
+LogM("Add Job: "+job);
 try
 {
 frmJobs = new TfrmJobs ( pnlJobs, job );

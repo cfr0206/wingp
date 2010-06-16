@@ -1,8 +1,8 @@
 object frmGPSpooler: TfrmGPSpooler
-  Left = 523
-  Top = 220
-  Width = 674
-  Height = 423
+  Left = 502
+  Top = 216
+  Width = 681
+  Height = 524
   Caption = 'GPSpooler'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -13,11 +13,19 @@ object frmGPSpooler: TfrmGPSpooler
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object Splitter1: TSplitter
+    Left = 0
+    Top = 382
+    Width = 673
+    Height = 3
+    Cursor = crVSplit
+    Align = alBottom
+  end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 666
-    Height = 389
+    Width = 673
+    Height = 382
     ActivePage = tshJobs
     Align = alClient
     TabIndex = 0
@@ -27,7 +35,7 @@ object frmGPSpooler: TfrmGPSpooler
       object Panel1: TPanel
         Left = 0
         Top = 0
-        Width = 658
+        Width = 665
         Height = 41
         Align = alTop
         BevelOuter = bvNone
@@ -36,8 +44,8 @@ object frmGPSpooler: TfrmGPSpooler
       object pnlJobs: TScrollBox
         Left = 0
         Top = 41
-        Width = 658
-        Height = 320
+        Width = 665
+        Height = 313
         VertScrollBar.Smooth = True
         Align = alClient
         TabOrder = 1
@@ -49,7 +57,7 @@ object frmGPSpooler: TfrmGPSpooler
       object GroupBox1: TGroupBox
         Left = 0
         Top = 0
-        Width = 658
+        Width = 665
         Height = 129
         Align = alTop
         Caption = 'Environment Variables'
@@ -102,7 +110,7 @@ object frmGPSpooler: TfrmGPSpooler
         object mmEnv: TMemo
           Left = 116
           Top = 15
-          Width = 540
+          Width = 547
           Height = 112
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
@@ -119,18 +127,29 @@ object frmGPSpooler: TfrmGPSpooler
       end
     end
   end
+  object lbLog: TListBox
+    Left = 0
+    Top = 385
+    Width = 673
+    Height = 105
+    AutoComplete = False
+    Align = alBottom
+    ExtendedSelect = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Lucida Console'
+    Font.Style = []
+    ItemHeight = 11
+    ParentFont = False
+    TabOrder = 1
+  end
   object TrayIcon1: TTrayIcon
     Visible = True
     Hide = True
     RestoreOn = imDoubleClick
     PopupMenuOn = imNone
     Left = 608
-    Top = 328
-  end
-  object Timer1: TTimer
-    Enabled = False
-    OnTimer = Timer1Timer
-    Left = 528
     Top = 328
   end
   object IPCServer: TServerSocket
