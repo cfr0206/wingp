@@ -21,7 +21,7 @@ class TfrmGPSpooler : public TForm
 __published:	// IDE-managed Components
     TTrayIcon *TrayIcon1;
     TPageControl *PageControl1;
-        TTabSheet *tshJobs;
+    TTabSheet *tshJobs;
     TTabSheet *TabSheet2;
     TGroupBox *GroupBox1;
         TPanel *Panel1;
@@ -32,11 +32,12 @@ __published:	// IDE-managed Components
         TRadioButton *rbSystem;
         TRadioButton *rbCurrentUser;
         TMemo *mmEnv;
-        TTimer *Timer1;
         TServerSocket *IPCServer;
+        TSplitter *Splitter1;
+        TListBox *lbLog;
     void __fastcall btnSetEnvClick(TObject *Sender);
     void __fastcall btnDelEnvClick(TObject *Sender);
-        void __fastcall Timer1Timer(TObject *Sender);
+
         void __fastcall IPCServerClientRead(TObject *Sender,
           TCustomWinSocket *Socket);
 protected:	// User declarations
@@ -52,14 +53,12 @@ protected:	// User declarations
     //TWatchFolder *WatchFolder;
 
     void CheckJobFolder();
-    void get_printers(TStrings *);
-    void delete_key_env();
-    void make_key_env();
+    void GetPrinterList(TStrings *);
+    void DeleteKeyEnv();
+    void MakeKeyEnv();
     void ReadJobFolder();
-    void fill_job_list();
-    void delete_hiden_job();
-    TfrmJobs * get_job(AnsiString jn);
-    void update_env();
+    TfrmJobs * GetJobFrame(AnsiString jn);
+    void MsgUpdateEnv();
     void AddJob(AnsiString job);
 public:		// User declarations
     __fastcall TfrmGPSpooler(TComponent* Owner);

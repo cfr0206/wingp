@@ -30,6 +30,12 @@ __fastcall TfrmJobs::TfrmJobs ( TComponent* Owner, AnsiString fn )
     copies = param_list->Values["copies"].ToIntDef ( 1 );
     name = param_list->Values["name"];
     job = fn;
+
+    LogM("Job parametr:");
+    LogM("file: " +  Utf8ToAnsi ( param_list->Values["name"] + "   " ));
+    LogM("printer: " + param_list->Values["printer"]);
+    LogM("copies: "+param_list->Values["copies"]);
+
     lock_file();
     
     }
@@ -42,7 +48,17 @@ __fastcall TfrmJobs::~TfrmJobs()
 void TfrmJobs::lock_file()
     {
     fin = FileOpen ( file, fmOpenRead | fmShareExclusive );
+    if (fin==-1)
+      LogE("Lock file error: "+file);
+      else
+        LogM("Lock file successfully: "+file);
+
     fin_job = FileOpen ( job, fmOpenRead | fmShareExclusive );
+    if (fin_job==-1)
+      LogE("Lock file error: "+job);
+      else
+        LogM("Lock file successfully: "+job);
+
     }
 
 void TfrmJobs::unlock_file()
@@ -51,11 +67,13 @@ void TfrmJobs::unlock_file()
         {
         FileClose ( fin );
         fin = -1;
+        LogM("Unlock file "+file);
         }
     if ( fin_job != -1 )
         {
         FileClose ( fin_job );
         fin_job = -1;
+        LogM("Unlock file "+job);
         }
     }
 
@@ -143,9 +161,16 @@ void __fastcall TfrmJobs::BitBtn1Click ( TObject *Sender )
 try
 {
     unlock_file();
-    DeleteFile ( file + ".job" );
-    DeleteFile ( file );
-    //Visible=false;
+    if (DeleteFile ( file + ".job" ))
+        LogM("File "+file+".job deleted successfully.");
+       else
+       LogE("File "+file+".job don't deleted.");
+
+    if (DeleteFile ( file ))
+        LogM("File "+file+" deleted successfully.");
+       else
+       LogE("File "+file+" don't deleted.");
+
     delete this;
     }
     __finally
