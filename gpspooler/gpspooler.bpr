@@ -4,15 +4,21 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="gpspooler.exe"/>
-    <OBJFILES value="gpspooler.obj frmMain.obj frmJobFrame.obj globaldef.obj"/>
+    <OBJFILES value="gpspooler.obj frmMain.obj frmJobFrame.obj globaldef.obj uLogs.obj"/>
     <RESFILES value="gpspooler.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) frmMain.dfm frmJobFrame.dfm"/>
     <LIBFILES value=""/>
-    <LIBRARIES value="vclx.lib bcbsmp.lib rtl.lib vcl.lib"/>
-    <SPARELIBS value="vcl.lib rtl.lib bcbsmp.lib vclx.lib"/>
+    <LIBRARIES value="indy.lib xmlrtl.lib dsnapcon.lib dsnapcrba.lib visualdbclx.lib teeqr.lib 
+      dss.lib tee.lib teedb.lib teeui.lib qrpt.lib bdecds.lib dsnap.lib cds.lib 
+      ibxpress.lib vcldbx.lib bdertl.lib adortl.lib dbrtl.lib vcldb.lib vclx.lib 
+      bcbsmp.lib rtl.lib vcl.lib"/>
+    <SPARELIBS value="vcl.lib rtl.lib bcbsmp.lib vclx.lib vcldb.lib dbrtl.lib adortl.lib 
+      bdertl.lib vcldbx.lib ibxpress.lib cds.lib dsnap.lib bdecds.lib qrpt.lib 
+      teeui.lib teedb.lib tee.lib dss.lib teeqr.lib visualdbclx.lib 
+      dsnapcrba.lib dsnapcon.lib xmlrtl.lib indy.lib"/>
     <PACKAGES value="vcl.bpi rtl.bpi dbrtl.bpi adortl.bpi vcldb.bpi vclx.bpi bdertl.bpi 
       vcldbx.bpi ibxpress.bpi cds.bpi dsnap.bpi bdecds.bpi qrpt.bpi teeui.bpi 
       teedb.bpi tee.bpi dss.bpi teeqr.bpi visualclx.bpi visualdbclx.bpi 
@@ -24,7 +30,7 @@
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="ilink32"/>
-    <USERDEFINES value="_DEBUG"/>
+    <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT"/>
     <MAINSOURCE value="gpspooler.cpp"/>
     <INCLUDEPATH value="&quot;C:\Program Files\Borland\CBuilder6\Projects&quot;;D:\dick\gpspooler;$(BCB)\include;$(BCB)\include\vcl"/>
@@ -34,13 +40,12 @@
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I&quot;C:\Program Files\Borland\CBuilder6\Projects&quot; -ID:\dick\gpspooler 
-      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Q -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- 
-      -c -tW -tWM"/>
-    <PFLAGS value="-$Y+ -$W -$O- -$A8 -v -JPHNE -M"/>
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -boa"/>
+    <CFLAG1 value="-O2 -H=$(BCB)\lib\vcl60.csm -Hc -Q -Vx -Ve -X- -a8 -b- -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-$Y- -$L- -$D- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
-    <AFLAGS value="/mx /w2 /zi"/>
-    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpe -x -Gn"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -55,6 +60,7 @@
       <FILE FILENAME="frmMain.cpp" FORMNAME="frmGPSpooler" UNITNAME="frmMain" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="frmJobFrame.cpp" FORMNAME="frmJobs" UNITNAME="frmJobFrame" CONTAINERID="CCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="globaldef.cpp" FORMNAME="" UNITNAME="globaldef" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="uLogs.pas" FORMNAME="" UNITNAME="uLogs" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

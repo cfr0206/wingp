@@ -11,24 +11,17 @@ object frmGPSpooler: TfrmGPSpooler
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
-    Left = 0
-    Top = 382
-    Width = 673
-    Height = 3
-    Cursor = crVSplit
-    Align = alBottom
-  end
   object PageControl1: TPageControl
     Left = 0
     Top = 0
     Width = 673
-    Height = 382
-    ActivePage = tshJobs
+    Height = 490
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object tshJobs: TTabSheet
       Caption = 'Jobs'
@@ -45,7 +38,7 @@ object frmGPSpooler: TfrmGPSpooler
         Left = 0
         Top = 41
         Width = 665
-        Height = 313
+        Height = 421
         VertScrollBar.Smooth = True
         Align = alClient
         TabOrder = 1
@@ -125,30 +118,23 @@ object frmGPSpooler: TfrmGPSpooler
           WordWrap = False
         end
       end
+      object cbMinOnExit: TCheckBox
+        Left = 16
+        Top = 152
+        Width = 121
+        Height = 17
+        Caption = 'Minimize on exit'
+        TabOrder = 1
+        OnClick = cbMinOnExitClick
+      end
     end
   end
-  object lbLog: TListBox
-    Left = 0
-    Top = 385
-    Width = 673
-    Height = 105
-    AutoComplete = False
-    Align = alBottom
-    ExtendedSelect = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Lucida Console'
-    Font.Style = []
-    ItemHeight = 11
-    ParentFont = False
-    TabOrder = 1
-  end
-  object TrayIcon1: TTrayIcon
+  object TrayIcon: TTrayIcon
     Visible = True
+    PopupMenu = TrayPopupMenu
     Hide = True
     RestoreOn = imDoubleClick
-    PopupMenuOn = imNone
+    PopupMenuOn = imRightClickUp
     Left = 608
     Top = 328
   end
@@ -159,5 +145,13 @@ object frmGPSpooler: TfrmGPSpooler
     OnClientRead = IPCServerClientRead
     Left = 432
     Top = 328
+  end
+  object TrayPopupMenu: TPopupMenu
+    Left = 584
+    Top = 392
+    object cmdExit: TMenuItem
+      Caption = 'Exit'
+      OnClick = cmdExitClick
+    end
   end
 end

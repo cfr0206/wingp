@@ -6,10 +6,11 @@
 #include <SyncObjs.hpp>
 //---------------------------------------------------------------------------
 extern TCriticalSection * csLock;
-extern TListBox * log;
+extern TStringList *Config;
+//Log to File
+#define FL 10
 
-void LogM(AnsiString s);
-void LogE(AnsiString s);
+//Config defines
 
-
+#define MINTOEXIT "MiniToExit"
 #endif

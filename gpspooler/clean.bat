@@ -1,1 +1,1 @@
-del *.~??? *.obj *.tds *.orig *.ddp 
+del *.~??? *.obj *.tds *.orig *.ddp  *.dcu
