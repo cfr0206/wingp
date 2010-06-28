@@ -272,7 +272,7 @@ char gprint[MAX_PATH];
 char gprint_path[MAX_PATH+1]={0};
 
 DWORD rz=GetEnvironmentVariable("GPRINT", gprint_path, MAX_PATH);
-if(rz==0)//ïåðåìåííîé íåò - ïóòü ïðîïèñàí â PATH
+if(rz==0)//Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð¹ Ð½ÐµÑ‚ - Ð¿ÑƒÑ‚ÑŒ Ð¿Ñ€Ð¾Ð¿Ð¸ÑÐ°Ð½ Ð² PATH
 	sprintf(gprint,"gprint.exe -i%s",fn);
 else
 	sprintf(gprint,"%s -i%s",gprint_path, fn);
@@ -543,13 +543,13 @@ Boolean WriteExportFile (GPtr globals)
 			
 			if (!TSC (TestAbort ())) return FALSE;
 			
-			if (gStuff->depth==16)//òóò íà÷èíàåòñÿ æîïà: èñïðàâëÿåì 15 áèò -> 16
+			if (gStuff->depth==16)//Ñ‚ÑƒÑ‚  Ð¸ÑÐ¿Ñ€Ð°Ð²Ð»ÑÐµÐ¼ 15 Ð±Ð¸Ñ‚ -> 16
 			{
 				WORD *buf=(WORD*)rowData;
 				for(long i=0;i<(count/2);i++)
-					buf[i]=(buf[i]*65535+16384)/32768;//ôîðìóëà ñ ñàéòà photoshop dev.
+					buf[i]=(buf[i]*65535+16384)/32768;//Ñ„Ð¾Ñ€Ð¼ÑƒÐ»Ð° Ñ ÑÐ°Ð¹Ñ‚Ð° photoshop dev.
 			}
-			//èíâåðòèðóåì CMYK è ìóëüòèêîëîð
+			//Ð¸Ð½Ð²ÐµÑ€Ñ‚Ð¸Ñ€ÑƒÐµÐ¼ CMYK Ð¸ Ð¼ÑƒÐ»ÑŒÑ‚Ð¸ÐºÐ¾Ð»Ð¾Ñ€
 			if (gStuff->imageMode==plugInModeCMYKColor || 
 				gStuff->imageMode==plugInModeMultichannel)
 			{
@@ -570,7 +570,7 @@ Boolean WriteExportFile (GPtr globals)
 			}
 		
 		}
-	//Çàïèøåì ïðîôàéë åñëè îí åñòü
+	//Ð—Ð°Ð¿Ð¸ÑˆÐµÐ¼ Ð¿Ñ€Ð¾Ñ„Ð°Ð¹Ð» ÐµÑÐ»Ð¸ Ð¾Ð½ ÐµÑÑ‚ÑŒ
 	if (gStuff->iCCprofileData!=NULL)
 	{
 		char * icc=*(gStuff->iCCprofileData);
