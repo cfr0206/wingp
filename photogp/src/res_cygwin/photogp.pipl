@@ -1,0 +1,146 @@
+#define RSCL32(a,b,c,d)   0x ## c ## d, 0x ## a ## b
+#define LC(a,b,c,d)       #d, #c, #b, #a
+#define RSCS32(a)         a, 0
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16990,
+	"An integer is required between ^1 and ^2."
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16991,
+	"A decimal number is required between ^1 and ^2."
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16992,
+	"This plug-in requires Adobe Photoshop® ^1 or later functionality."
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16993,
+	"This plug-in is incompatible with this version of the host program."
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16994,
+	"the required suite \'^0\' is unavailable"
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16000,
+	"PhotoGP\n\nVersion CS3 Release 1 (02/14/2007)\nCopyright 2009-2007, Adobe Systems Incorporated.\nAll Rights Reserved.\n\nGutenprint print plug-in for Adobe Photoshop®."
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16002,
+	"PhotoGP\\n\\nVersion CS3 Release 1 (02/14/2007)\\nCopyright 2009-2007 Adobe Systems Incorporated. All Rights Reserved.\\n\\nGutenprint print plug-in for Adobe Photoshop®.\\n\\n\\n\\n"
+END
+
+16000  PiPL  DISCARDABLE
+BEGIN
+	1, /* First byte must always be 1 */
+	0L, /* kCurrentPiPL Version */
+	    7L, /* Property count */
+	"MIB8", /* '8BIM' */
+	"dnik", /* 'kind' PIKindProperty */
+	0L, /* Index */
+	    4L, /* Length */
+	"MEB8", /* '8BEM' Photoshop Export plug-in */
+
+	"MIB8", /* '8BIM' */
+	"eman", /* 'name' PINameProperty */
+	0L, /* Index */
+	   12L, /* Length */
+	"\012PhotoGP...\0", 
+
+	"MIB8", /* '8BIM' */
+	"srev", /* 'vers' PIVersionProperty */
+	0L, /* Index */
+	    4L, /* Length */
+	0X00040000L, /* (Major << 16) | Minor */
+
+	"MIB8", /* '8BIM' */
+	"68xw", /* 'wx86' PIWin32X86CodeProperty */
+	0L, /* Index */
+	   12L, /* Length */
+	"PluginMain\0\0", 
+
+	"MIB8", /* '8BIM' */
+	"mtsh", /* 'hstm' PITerminology */
+	0L, /* Index */
+	   20L, /* Length */
+	0L, /* Version */
+	"Btuo", /* Class ID */
+	"llun", /* Event ID */
+	16000, /* Terminology ID */
+	"\0\0\0\0", /* Unique string */
+	    0, /* Padding */
+
+	"MIB8", /* '8BIM' */
+	"edom", /* 'mode' SupportedModes */
+	0L, /* Index */
+	    4L, /* Length */
+	0X807F, /* Supported modes */
+	0, /* Reserved */
+
+	"MIB8", /* '8BIM' */
+	"lbne", /* 'enbl' EnableInfoProperty */
+	0L, /* Index */
+	  172L, /* Length */
+	"in (PSHOP_ImageMode, GrayScaleMode, IndexedColorMode, RGBMode,CMYKMode, HSLMode, HSBMode, MultichannelMode,DuotoneMode, RGB48Mode, Gray16Mode) ||PSHOP_ImageDepth == 16\0\0\0\0\0", 
+
+END
+
+16000  aete  DISCARDABLE
+BEGIN
+	1, /* First byte must always be 1 */
+	0X0001, /* majorVersion|minorVersion */
+	0, /* language */
+	0, /* script */
+	    1, /* Suite Count */
+	"\011Dickobraz", 
+	"\030Gutenprint print plug-in", 
+	"5Kds", /* Suite ID */
+	1, /* Suite level */
+	1, /* Suite version */
+	    0, /* Event Count */
+	    1, /* Class count */
+	"\021Dickobraz PhotoGP", 
+	"Btuo", 
+	"\030Gutenprint print plug-in", 
+	    2, /* Property count */
+	"\015<Inheritance>", 
+	"^#@c", 
+	"rpxE", 
+	"\023parent class export", 
+	0X1000, /* Class flags */
+	"\002in", 
+	"  nI", 
+	" htP", 
+	"\011file path", 
+	0X1000, /* Class flags */
+	    0, /* Elements count */
+	0, /* Number of comparison ops (always 0) */
+	    0, /* Enum count */
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16100,
+	"Gutenprint:"
+END
+
+STRINGTABLE	DISCARDABLE
+BEGIN
+	16101,
+	"Dickobraz????"
+END
+
