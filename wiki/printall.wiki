@@ -11,3 +11,21 @@
  * GhostScript. [http://www.ghostscript.com/]
  * RedMonEE. [http://www.is-foehr.de/]
  * GTK+ for Windows Runtime Environment. [http://sourceforge.net/projects/gtk-win/]
+
+== Настройка RedMonEE ==
+http://wingp.googlecode.com/svn/wiki/images/rmconfig1.png
+{{{
+Redirect this port to the programm:
+C:\Program Files\gs\gs8.71\bin\gswin32c.exe
+Arguments for this program:
+-q -dBATCH -dNOPAUSE -sDEVICE=tiff24nc -r300 -sOutputFile="%1"  -f -
+Program to Start after finishing
+D:\dick\gp\img2gpraw\to_raster.bat - необходимо указать правильный путь
+Arguments for this
+"%1" - кавычки обязательны
+}}} 
+http://wingp.googlecode.com/svn/wiki/images/rmconfig2.png
+{{{
+Template for Output to File
+%GPRINT_TEMP%%n.tiff
+}}}
