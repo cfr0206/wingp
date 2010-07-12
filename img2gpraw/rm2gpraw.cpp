@@ -27,17 +27,21 @@ if (log_enable)                                     \
 
 
 //********************** Command line options **********************************
-const char* short_options = "i:hl";
+const char* short_options = "i:hlvg";
 
 const struct option long_options[] = {
     {"image",  required_argument, NULL, 'i'},
     {"help" ,  no_argument,       NULL, 'h'},
     {"log"  ,  no_argument,       NULL, 'l'},
+    {"flipv",  no_argument,       NULL, 'v'},
+    {"fliph",  no_argument,       NULL, 'g'},
     {NULL   ,            0,       NULL, 0}
 };
 //**************************** Command ****************************************
 bool log_enable=false;
 char *filename=NULL;
+bool flipv=false;
+bool fliph=false;
 //********************** Functions declare ************************************
 FIMULTIBITMAP* GenericLoader ( const char* lpszPathName, int flag );
 void FreeImageErrorHandler ( FREE_IMAGE_FORMAT fif, const char *message );
@@ -91,61 +95,83 @@ int main ( int argc, char *argv[] ) {
     for ( int page=0; page<count; page++ ) {
         dibpage = FreeImage_LockPage ( mdib, page );
         if ( dibpage ) {
-            FIBITMAP* dib = FreeImage_ConvertTo24Bits ( dibpage );
-
-            if ( dib ) {
-                int w, h, bpp, dpix, dpiy;
-                w=FreeImage_GetWidth ( dib );
-                h=FreeImage_GetHeight ( dib );
-                bpp=FreeImage_GetBPP ( dib );
-                dpix= ( int ) ( ( FreeImage_GetDotsPerMeterX ( dib ) *1.0 ) /1000.0*25.4 );
-                dpiy= ( int ) ( ( FreeImage_GetDotsPerMeterY ( dib ) *1.0 ) /1000.0*25.4 );
-                //FREE_IMAGE_COLOR_TYPE ict =  FreeImage_GetColorType ( dib );
-
-                LOG ( "Page number: %d\n",page )
-                LOG ( "Input image parametrs:\n" );
-                LOG ( "\twidth: %d\n",w );
-                LOG ( "\theight: %d\n",h );
-                LOG ( "\tbpp: %d\n",bpp );
-                LOG ( "\tdpi_x: %d\n",dpix );
-                LOG ( "\tdpi_y: %d\n",dpiy );
-
-                gpraw_t gpraw;
-                gpraw.w=w;
-                gpraw.h=h;
-                gpraw.planes=3;
-                gpraw.depth=8;
-                gpraw.xdpi=dpix;
-                gpraw.ydpi=dpiy;
-                strcpy ( gpraw.color_space,"RGB" );
-                strcpy ( gpraw.channel_name[0],"Red" );
-                strcpy ( gpraw.channel_name[1],"Green" );
-                strcpy ( gpraw.channel_name[2],"Blue" );
-                strcpy ( gpraw.document_name,filename );
-
-                char *ld = strrchr ( filename,'\\' );
-                if ( ld==NULL )
-                    strcpy ( fnext,filename );
-                else
-                    strcpy ( fnext,ld+1 );
-
-                sprintf ( fnout,"%s%s%05d.gpraw", tmp, fnext, page );
-                LOG ( "Output filename: %s\n", fnout );
-
-                FILE *fout = fopen ( fnout,"wb" );
-
-                fwrite ( &gpraw,sizeof ( gpraw ),1,fout );
-
-                BYTE *data;
-                for ( int scanline=0; scanline<h; scanline++ ) {
-                    data = FreeImage_GetScanLine ( dib, scanline );
-                    fwrite ( data,w*3,1,fout );
-                }
-
-                fclose ( fout );
-
-                FreeImage_Unload ( dib );
+            FITAG *tag;
+            BOOL brz= FreeImage_GetMetadata ( FIMD_EXIF_MAIN, dibpage, "Orientation", &tag );
+            if ( fliph ) {
+                if ( FreeImage_FlipHorizontal ( dibpage ) ) {
+                    LOG ( "FlipHorizontal ok.\n" )
+                } else {
+                    LOG ( "FlipHorizontal error.\n" )
+                };
             }
+            if ( flipv ) {
+                if ( FreeImage_FlipVertical ( dibpage ) ) {
+                    LOG ( "FlipVertical ok.\n" )
+                } else {
+                    LOG ( "FlipVertical error.\n" )
+                };
+            }
+            //FIBITMAP* dib = FreeImage_ConvertTo24Bits ( dibpage );
+
+            //if ( dibpage ) {
+            int w, h, bpp, dpix, dpiy, pitch;
+            w=FreeImage_GetWidth ( dibpage );
+            h=FreeImage_GetHeight ( dibpage );
+            bpp=FreeImage_GetBPP ( dibpage );
+            dpix= ( int ) ( ( FreeImage_GetDotsPerMeterX ( dibpage ) *1.0 ) /1000.0*25.4 );
+            dpiy= ( int ) ( ( FreeImage_GetDotsPerMeterY ( dibpage ) *1.0 ) /1000.0*25.4 );
+            pitch = FreeImage_GetPitch ( dibpage );
+            //FREE_IMAGE_COLOR_TYPE ict =  FreeImage_GetColorType ( dib );
+
+            LOG ( "Page number: %d\n",page )
+            LOG ( "Input image parametrs:\n" );
+            LOG ( "\twidth: %d\n",w );
+            LOG ( "\theight: %d\n",h );
+            LOG ( "\tbpp: %d\n",bpp );
+            LOG ( "\tdpi_x: %d\n",dpix );
+            LOG ( "\tdpi_y: %d\n",dpiy );
+            LOG ( "\tpitch: %d\n",pitch );
+            if ( tag ) {
+                LOG ( "Orientation (%d): %s\n", FreeImage_GetTagValue ( tag ), FreeImage_TagToString ( FIMD_EXIF_MAIN, tag ) );
+                //printf ( "-- : %s\n", ( char* ) FreeImage_GetTagValue ( tag ) );
+            }
+
+            gpraw_t gpraw;
+            gpraw.w=w;
+            gpraw.h=h;
+            gpraw.planes=3;
+            gpraw.depth=8;
+            gpraw.xdpi=dpix;
+            gpraw.ydpi=dpiy;
+            strcpy ( gpraw.color_space,"RGB" );
+            strcpy ( gpraw.channel_name[0],"Red" );
+            strcpy ( gpraw.channel_name[1],"Green" );
+            strcpy ( gpraw.channel_name[2],"Blue" );
+            strcpy ( gpraw.document_name,filename );
+
+            char *ld = strrchr ( filename,'\\' );
+            if ( ld==NULL )
+                strcpy ( fnext,filename );
+            else
+                strcpy ( fnext,ld+1 );
+
+            sprintf ( fnout,"%s%s%05d.gpraw", tmp, fnext, page );
+            LOG ( "Output filename: %s\n", fnout );
+
+            FILE *fout = fopen ( fnout,"wb" );
+
+            fwrite ( &gpraw,sizeof ( gpraw ),1,fout );
+
+            BYTE *data;
+            for ( int scanline=0; scanline<h; scanline++ ) {
+                data = FreeImage_GetScanLine ( dibpage, scanline );
+                fwrite ( data,w*3,1,fout );
+            }
+
+            fclose ( fout );
+
+            //FreeImage_Unload ( dib );
+            //}
             FreeImage_UnlockPage ( mdib, dibpage, FALSE );
             LOG ( "***************************************************************\n" );
         }
@@ -155,7 +181,7 @@ int main ( int argc, char *argv[] ) {
 
 //make file with list of files
     char filelistname[1024]= {0};
-    sprintf ( filelistname,"%s%s.fl", tmp, fnext );
+    sprintf ( filelistname,"%s%s.filelist", tmp, fnext );
     FILE *flout=fopen ( filelistname,"wt" );
     for ( int page=0; page<count; page++ ) {
         fprintf ( flout,"%s%s%05d.gpraw\n", tmp, fnext, page );
@@ -231,9 +257,18 @@ void parse_opt ( int argc, char **argv ) {
                 filename = strdup ( optarg );
             break;
         }
+        case 'v': {
+            flipv=true;
+            break;
+        }
+        case 'g': {
+            fliph=true;
+            break;
+        }
+
         case '?':
         default: {
-            fprintf ( stdout, "found unknown option\n" );
+            fprintf ( stderr, "found unknown option\n" );
             exit ( 1 );
         };
         };
