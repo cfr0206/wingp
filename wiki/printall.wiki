@@ -1,13 +1,13 @@
-#summary One-sentence summary of this page.
+#summary Печатаем из любого приложения через GP.
 
 = Introduction =
 
-Add your content here.
+Печатаем из любого приложения через GP.
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Зависимости ==
+ * GhostScript. [http://www.ghostscript.com/]
+ * RedMonEE. [http://www.is-foehr.de/]
+ * GTK+ for Windows Runtime Environment. [http://sourceforge.net/projects/gtk-win/]
