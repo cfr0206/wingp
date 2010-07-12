@@ -11,5 +11,4 @@
   * После окончания растрирования, создается файл с описанием параметров печати.
   * Вызывается *GPSPOOLER*, который посылает данные на принтер.
 
-http://code.google.com/p/wingp/wiki/images/GPrintWorkflow.png
-http://code.google.com/p/wingp/source/browse/wiki/images/GPrintWorkflow.png
+http://wingp.googlecode.com/svn/wiki/images/GPrintWorkflow.png
