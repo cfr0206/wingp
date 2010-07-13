@@ -233,9 +233,22 @@ bool fexist ( char *fn ) {
 }
 
 void do_help() {
-    printf ( "Copyright(c) D.Gar'kaev aka Dickobraz.\n" );
-    printf ( "Utilite to convert RedMonEE multipage tiff to gpraw format.\n" );
-    printf ( "Usage: rm2gpraw <filename>\n" );
+printf ("rm2gpraw (%s)\n",__DATE__);
+
+printf ( 
+"Utilite to convert RedMonEE multipage tiff to gpraw format.\n" 
+"Usage:\n"
+"rm2gpraw [--help | -h]\n"
+"rm2gpraw {--image | -i}<filename.tiff> [--log | -l] [--flipv | -v] [--fliph | -g]\n"
+"rm2gpraw {--image | -i}<filename.tiff> [-lvg]\n"
+"\nOptions:\n"
+"--help,  -h\t- help\n"
+"--image, -i\t- input multipage tiff file\n"
+"--log,   -l\t- enable log\n"
+"--flipv, -v\t- flip vertical\n"
+"--fliph, -g\t- flip horizontal\n"
+"\nCopyright(c) D.Gar'kaev aka Dickobraz.\n"
+);
 }
 
 void parse_opt ( int argc, char **argv ) {
