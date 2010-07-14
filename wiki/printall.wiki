@@ -9,7 +9,9 @@
 
 == Зависимости ==
  * GhostScript. [http://www.ghostscript.com/]
- * RedMonEE. [http://www.is-foehr.de/]
+ * RedMonEE.
+  * Win32:[http://www.is-foehr.de/]
+  * Win64:[http://www.winimage.com/misc/redmon/]
  * GTK+ for Windows Runtime Environment. [http://sourceforge.net/projects/gtk-win/]
 
 == Настройка RedMonEE ==
