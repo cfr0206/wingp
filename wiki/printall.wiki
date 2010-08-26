@@ -12,7 +12,7 @@
  * RedMonEE.
   * Win32:[http://www.is-foehr.de/]
   * Win64:[http://www.winimage.com/misc/redmon/]
- * GTK+ for Windows Runtime Environment. [http://sourceforge.net/projects/gtk-win/]
+
 
 == Настройка RedMonEE ==
 http://wingp.googlecode.com/svn/wiki/images/rmconfig1.png
