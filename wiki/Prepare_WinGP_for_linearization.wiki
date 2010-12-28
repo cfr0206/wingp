@@ -1,5 +1,5 @@
 1.	Правим все xml где встречается density.
- 
+
 *printers.xml*:
 {{{
    <family name="escp2">
