@@ -1,4 +1,5 @@
-1.	Правим все xml где встречается density. 
+1.	Правим все xml где встречается density.
+ 
 *printers.xml*:
 {{{
    <family name="escp2">
@@ -30,7 +31,7 @@
 
 Хотя я бы и гамму поставил в 1
 
-*Model.xml*:
+*model.xml*:
 {{{
 <resolution translate="text" name="720un" text="720 DPI High Quality">
    <physicalResolution>720 720</physicalResolution>
@@ -45,7 +46,7 @@
    <parameter type="float" name="DropSize3">1.000000</parameter>
   </resolution>
 }}}
-*Media.xml*:
+*media.xml*:
 {{{
 <ink translate="text" name="None" text="EPSON Standard Inks">
 <!-- ПРАВКА_________________________________________________CHAPA -->
