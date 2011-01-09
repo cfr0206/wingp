@@ -4,10 +4,15 @@
 Состоит из основных этапов: 
 
 0. Калибровка принтера с помощью сервисной утилиты:
+
 * Head angular adjustment 
+
 * Bi-Directional adjustment
+
 * PW adjustment
+
 * First Dot Posision adjustment
+
 * PF adjustment
 
 1. Калибровка:
