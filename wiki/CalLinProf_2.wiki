@@ -8,13 +8,11 @@
 
 Зачастую без этого этапа все последующие во многом лишены смысла.
 
-{{{
 * Head angular adjustment
 * Bi-Directional adjustmen
 * PW adjustment
 * First Dot Posision adjustment
 * PF adjustment
-}}}
 
 == 1. Калибровка: ==
 
