@@ -8,17 +8,19 @@
 
 Зачастую без этого этапа все последующие во многом лишены смысла.
 
+{{{
 # Head angular adjustment
-    # Bi-Directional adjustmen
-    # PW adjustment
-    # First Dot Posision adjustment
-    # PF adjustment
+# Bi-Directional adjustmen
+# PW adjustment
+# First Dot Posision adjustment
+# PF adjustment
+}}}
 
 == 1. Калибровка: ==
 
 1 Соотношений размеров капель. Пока только визуально - testgenerator + паттерны Роберта Кравитца (Robert Krawitz). Нахождение значений DropSize1 и DropSize2.
 
-2 Лайтов. (визуально, возможно инструментально - Gplin). Нахождение значений параметров а) Value (виз. или инстр.) б) Transition (виз. в) DensityScale[http://code.google.com/p/wingp/w/edit/DensityScale ?] (виз. и/или инстр.)
+2 Лайтов. (визуально, возможно инструментально - Gplin). Нахождение значений параметров а) Value (виз. или инстр.) б) Transition (виз. в) DensityScale (виз. и/или инстр.)
 
 = 2. Линеаризация и канальные лимиты: =
 
@@ -50,6 +52,7 @@ _·         __Внедрение данных третьего прох�
 
 *printers**.**xml*:
 
+{{{
 <family name="escp2">
        <parameters name="standard_params">
          <parameter type="float" name="Gamma">0.470</parameter>
@@ -75,11 +78,13 @@ _·         __Внедрение данных третьего прох�
          <parameter type="float" name="BlackDensity">1.0</parameter>
 <!-- ПРАВКА_REDLINE________________________________________________CHAPA -->
        </parameters>
+}}}
 
 Так же можно исправить значение гаммы – 1, хотя необязательно.
 
 *model.xml*:
 
+{{{
 <resolution translate="text" name="720un" text="720 DPI High Quality">
     <physicalResolution>720 720</physicalResolution>
 <!-- ПРАВКА_REDLINE________________________________________________CHAPA -->
@@ -113,11 +118,13 @@ _·         __Внедрение данных третьего прох�
    <parameter type="curve" name="LumMap" ref="lum_map"/>
    <parameter type="curve" name="SatMap" ref="sat_map"/>
   </ink>
+}}}
 
 === 2.1.2 Надо явно указать GP наличие параметров описания линеаризационных кривых! Как только GP «видит», что есть такие описания, он, в режиме uncorrected, НЕ принимает никаких действий по коррекции (гамма-коррекции). ===
 
 === Если есть любой .cal файл - берём первую колонку и вставляем 256 значений идеальной линейной калибровки (вообще это арифметическая прогрессия с шагом 1/255 от 0.00000 до 1.00000) в printrc (media.xml) в каждый канал: ===
 
+{{{
 Parameter CyanCurve Curve True '<?xml version="1.0"?>
  <gutenprint xmlns="http://gimp-print.sourceforge.net/xsd/gp.xsd-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://gimp-print.sourceforge.net/xsd/gp.xsd-1.0
@@ -154,9 +161,11 @@ Parameter CyanCurve Curve True '<?xml version="1.0"?>
  </sequence>
  </curve>
  </gutenprint>
+}}}
 
 Теоретически можно сделать проще:
 
+{{{
 Parameter CyanCurve Curve True '<?xml version="1.0"?>
  <gutenprint xmlns="http://gimp-print.sourceforge.net/xsd/gp.xsd-1.0"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -168,6 +177,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  </sequence>
  </curve>
  </gutenprint>
+}}}
 
 _Этот способ мной не проверен. Хотя должен работать._
 
