@@ -1,11 +1,9 @@
-CC=gcc -mno-cygwin
-FI_INC=-IFreeImage
-FI_LIB=-LFreeImage -lFreeImage
-LIB = $(FI_LIB) -lstdc++ 
-DEF=  -D_WIN32
+CC=gcc -mno-cygwin 
+LIB =  
+DEF=  
 debug:
-	$(CC) -g -orm2gpraw.exe rm2gpraw.cpp $(FI_INC)  $(LIB) $(DEF) -DDEBUG
+	$(CC) -g -oimg2gpraw.exe img2gpraw.cpp  $(LIB) $(DEF) -DDEBUG
 
 release:
-	$(CC) -O3 -orm2gpraw.exe rm2gpraw.cpp $(FI_INC) $(LIB) $(DEF) -DRELEASE
+	$(CC) -O3 -oimg2gpraw.exe img2gpraw.cpp  $(LIB) $(DEF) -DRELEASE
 
