@@ -270,12 +270,14 @@ void PrintExportFile(GPtr globals)
 char *fn =  tmp_file;
 char gprint[MAX_PATH];
 char gprint_path[MAX_PATH+1]={0};
+char gprint_opt[128]={0};
 
 DWORD rz=GetEnvironmentVariable("GPRINT", gprint_path, MAX_PATH);
+GetEnvironmentVariable("GPRINT_OPT", gprint_opt, 128);
 if(rz==0)//переменной нет - путь прописан в PATH
-	sprintf(gprint,"gprint.exe -i%s",fn);
+	sprintf(gprint,"gprint.exe -i%s %s",fn,gprint_opt);
 else
-	sprintf(gprint,"%s -i%s",gprint_path, fn);
+	sprintf(gprint,"%s -i%s %s",gprint_path, fn,gprint_opt);
 
 
 STARTUPINFO si;
