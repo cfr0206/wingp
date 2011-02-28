@@ -3,5 +3,6 @@ rem goto to disk
 %~d0
 rem goto folder
 cd %~dp0
-rm2gpraw.exe -i%1 -lv 
+rem set LANG=en
+img2gpraw.exe -i%1 -l 
 %GPRINT% -f%1.filelist -l
