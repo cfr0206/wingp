@@ -47,6 +47,13 @@ object frmGPSpooler: TfrmGPSpooler
     object TabSheet2: TTabSheet
       Caption = 'Settings'
       ImageIndex = 1
+      object Label1: TLabel
+        Left = 8
+        Top = 144
+        Width = 69
+        Height = 13
+        Caption = 'GPRINT_OPT'
+      end
       object GroupBox1: TGroupBox
         Left = 0
         Top = 0
@@ -119,13 +126,20 @@ object frmGPSpooler: TfrmGPSpooler
         end
       end
       object cbMinOnExit: TCheckBox
-        Left = 16
-        Top = 152
+        Left = 8
+        Top = 184
         Width = 121
         Height = 17
         Caption = 'Minimize on exit'
         TabOrder = 1
         OnClick = cbMinOnExitClick
+      end
+      object Edit1: TEdit
+        Left = 80
+        Top = 140
+        Width = 121
+        Height = 21
+        TabOrder = 2
       end
     end
   end

@@ -41,6 +41,9 @@ __fastcall TfrmGPSpooler::TfrmGPSpooler ( TComponent* Owner )
     mmEnv->Lines->Add("STP_DATA_PATH\t= " + xml_folder);
     mmEnv->Lines->Add("GPRINT_TEMP\t= " + temp_folder);
     mmEnv->Lines->Add("GPRINT\t\t= " + exe_name_gprint);
+    mmEnv->Lines->Add("GPRINT_OPT\t= " + AnsiString(getenv( "GPRINT_OPT" )));
+    AnsiString as = AnsiString(getenv( "GPRINT_OPT" ));
+    Edit1->Text = AnsiString(getenv( "GPRINT_OPT" ));
     mmEnv->Lines->Add("--------------------------------------------------------------");
     mmEnv->Lines->Add("After installation, restart the applications using gutenprint.");
 
@@ -152,6 +155,7 @@ void TfrmGPSpooler::DeleteKeyEnv()
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
             reg->DeleteValue ( "GPRINT" );
+            reg->DeleteValue ( "GPRINT_OPT" );
             reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
         }
@@ -162,6 +166,7 @@ void TfrmGPSpooler::DeleteKeyEnv()
             reg->DeleteValue ( "GPSPOOLERJOBS" );
             reg->DeleteValue ( "STP_DATA_PATH" );
             reg->DeleteValue ( "GPRINT" );
+            reg->DeleteValue ( "GPRINT_OPT" );
             reg->DeleteValue ( "GPRINT_TEMP" );
             reg->CloseKey();
         }
@@ -188,6 +193,7 @@ void TfrmGPSpooler::MakeKeyEnv()
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
                 reg->WriteString ( "GPRINT", exe_name_gprint );
+                reg->WriteString ( "GPRINT_OPT", Edit1->Text );
                 reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
             }
@@ -201,6 +207,7 @@ void TfrmGPSpooler::MakeKeyEnv()
                 reg->WriteString ( "GPSPOOLERJOBS", jobs_folder );
                 reg->WriteString ( "STP_DATA_PATH", xml_folder );
                 reg->WriteString ( "GPRINT", exe_name_gprint );
+                reg->WriteString ( "GPRINT_OPT", Edit1->Text  );
                 reg->WriteString ( "GPRINT_TEMP", temp_folder );
                 reg->CloseKey();
             }
@@ -341,6 +348,7 @@ ToLog(FL, "GPSPOOLER     = " + AnsiString(getenv( "GPSPOOLER" )));
 ToLog(FL, "GPSPOOLERJOBS = " + AnsiString(getenv( "GPSPOOLERJOBS" )));
 ToLog(FL, "STP_DATA_PATH = " + AnsiString(getenv( "STP_DATA_PATH" )));
 ToLog(FL, "GPRINT        = " + AnsiString(getenv( "GPRINT" )));
+ToLog(FL, "GPRINT_OPT    = " + AnsiString(getenv( "GPRINT_OPT" )));
 ToLog(FL, "GPRINT_TEMP   = " + AnsiString(getenv( "GPRINT_TEMP" )));
 ToLog(FL, "");
 }
