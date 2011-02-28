@@ -5,6 +5,7 @@
 #include <getopt.h>
 #include <time.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <time.h>
 
 #include "gpraw.h"
@@ -12,38 +13,39 @@
 
 //*****************************************************************************
 #define LOGINIT()                                \
-{                                                \
-FILE *_flog_ = fopen ( log_filename,"w" );     \
-if ( _flog_ )                                    \
-        fclose ( _flog_ );                       \
-}
+    {                                                \
+        FILE *_flog_ = fopen ( log_filename,"w" );     \
+        if ( _flog_ )                                    \
+            fclose ( _flog_ );                       \
+    }
 
 #define LOG(...)                                    \
-if (log_enable)                                     \
-{                                                   \
-    FILE *_flog_ = fopen ( log_filename,"a+t" );  \
-    if ( _flog_ ) {                                 \
-        time_t rawtime;      \
-        struct tm * timeinfo;                  \
-        time ( &rawtime );                  \
-        timeinfo = localtime ( &rawtime );  \
-        fprintf ( _flog_,"%04d.%02d.%02d %02d:%02d:%02d: ",1900+timeinfo->tm_year,timeinfo->tm_mon+1,timeinfo->tm_mday,timeinfo->tm_hour,timeinfo->tm_min,timeinfo->tm_sec);\
-        fprintf ( _flog_, __VA_ARGS__ );            \
-        fflush(_flog_);                             \
-        fclose ( _flog_ );                          \
-    }                                               \
-}
+    if (log_enable)                                     \
+    {                                                   \
+        FILE *_flog_ = fopen ( log_filename,"a+t" );  \
+        if ( _flog_ ) {                                 \
+            time_t rawtime;      \
+            struct tm * timeinfo;                  \
+            time ( &rawtime );                  \
+            timeinfo = localtime ( &rawtime );  \
+            fprintf ( _flog_,"%04d.%02d.%02d %02d:%02d:%02d: ",1900+timeinfo->tm_year,timeinfo->tm_mon+1,timeinfo->tm_mday,timeinfo->tm_hour,timeinfo->tm_min,timeinfo->tm_sec);\
+            fprintf ( _flog_, __VA_ARGS__ );            \
+            fflush(_flog_);                             \
+            fclose ( _flog_ );                          \
+        }                                               \
+    }
 
 
 //********************** Command line options **********************************
-const char* short_options = "i:hl";
+const char* short_options = "i:hlr";
 
 const struct option long_options[] = {
-    {"image",  required_argument, NULL, 'i'},
-    {"help" ,  no_argument,       NULL, 'h'},
-    {"log"  ,  no_argument,       NULL, 'l'},
-//    {"flipv",  no_argument,       NULL, 'v'},
-//    {"fliph",  no_argument,       NULL, 'g'},
+    {"image" ,  required_argument, NULL, 'i'},
+    {"help"  ,  no_argument,       NULL, 'h'},
+    {"log"   ,  no_argument,       NULL, 'l'},
+    {"remove",  no_argument,       NULL, 'r'},
+    //    {"flipv",  no_argument,       NULL, 'v'},
+    //    {"fliph",  no_argument,       NULL, 'g'},
     {NULL   ,            0,       NULL, 0}
 };
 
@@ -75,6 +77,7 @@ char log_filename[1024]= {0};
 char *filename=NULL;
 bool flipv=false;
 bool fliph=false;
+bool file_remove=false;//delete src file
 //********************** Functions declare ************************************
 bool fexist ( char *fn );
 void do_help();
@@ -82,6 +85,7 @@ void parse_opt ( int argc, char **argv );
 void get_imginfo(char * fn, imginfo &ii);
 void set_channels_count(imginfo &ii);
 void set_channels_name(imginfo &ii);
+size_t get_fsize( const char * szFileName );
 //*****************************************************************************
 
 char own_path[1024]= {0};
@@ -164,41 +168,80 @@ int main ( int argc, char *argv[] ) {
         sprintf ( fnout,"%s%s%05d.gpraw", tmp, fnext, page );
         LOG ( "Output filename: %s\n", fnout );
 
+        //write head
         FILE *fout = fopen ( fnout,"wb" );
-
         fwrite ( &gpraw,sizeof ( gpraw ),1,fout );
+	LOG("Write %d byte of head\n",sizeof ( gpraw ));
 
         char data[1024]= {0};
-//
-        if (strcmp ( ii.color_space,"GRAYSCALE" )==0)
-            sprintf(data,"%sconvert.exe %s %s:- 2>nul",own_path,filename,"GRAY");
+        if (strcmp ( ii.color_space,"GRAYSCALE" )==0)//convert want "gray:-"
+            sprintf(data,"%sconvert.exe %s[%d] %s:- 2>nul",own_path,filename,page, "GRAY");
         else
-            sprintf(data,"%sconvert.exe %s %s:- 2>nul",own_path, filename,ii.color_space);
+            sprintf(data,"%sconvert.exe %s[%d] %s:- 2>nul",own_path, filename,page, ii.color_space);
 
+        //decode image
         FILE *fin = popen(data,"rb");
         if (fin==NULL)
         {
-            LOG ( "File imgraw.bat open error\n" );
+            LOG ( "File 'convert.exe' open error\n" );
             exit(1);
         }
-
+        //write decoded image
         size_t cb;
+        size_t size_data=0;
         while((cb=fread(data, 1, sizeof(data), fin))!=0)
         {
             fwrite ( data,cb,1,fout );
+            size_data+=cb;
         }
+
+        pclose(fin);
+
+        LOG("Write %ld byte of page %d\n",size_data, page+1);
+        //decode icm
+        char cmd_icm[1024]= {0};
+        sprintf(cmd_icm,"%sconvert.exe %s[%d] icm:- 2>nul",own_path, filename,page);
+        FILE *fin_icm = popen(cmd_icm, "rb");
+        size_t size_icm=0;
+        if (fin_icm)
+        {
+            while((cb=fread(data, 1, sizeof(data), fin_icm))!=0)
+            {
+                fwrite ( data,cb,1,fout );
+                size_icm+=cb;
+            }
+            if (size_icm!=0)
+            {   //correct head
+                gpraw.size_icc=size_icm;
+                gpraw.offset_icc = sizeof(gpraw_t)+size_data;
+                //rewrite head
+                fseek(fout,0,SEEK_SET);
+                fwrite ( &gpraw,sizeof ( gpraw ),1,fout );
+                LOG("Write %d byte of .icm profile of page %d.\n",size_icm,page+1);
+            }
+            else
+            {
+                LOG("Page %d has not .icm profile.\n",page+1);
+            }
+        }
+        else
+        {
+            LOG("Encode icm error.\n");
+            exit(1);
+        }
+
+        if (fin_icm)
+            pclose(fin_icm);
 
         fflush(fout);
         fclose ( fout );
-        pclose(fin);
+
         LOG ( "***************************************************************\n" );
-        //  }
 
     }
-//}
-#ifdef RELEASE
-    remove ( filename );
-#endif
+    if (file_remove)
+        remove ( filename );
+
     //make file with list of files
     char filelistname[1024]= {0};
     sprintf ( filelistname,"%s%s.filelist", tmp, fnext );
@@ -225,11 +268,12 @@ void do_help() {
         "Utilite to convert any image to gpraw format.\n"
         "Usage:\n"
         "img2gpraw [--help | -h]\n"
-        "img2gpraw {--image | -i}<filename> [--log | -l]\n"
+        "img2gpraw {--image | -i}<filename> [--log | -l] [--remove | -r]\n"
         "\nOptions:\n"
-        "--help,  -h\t- help\n"
-        "--image, -i\t- input filename\n"
-        "--log,   -l\t- enable log\n"
+        "--help,   -h\t- help\n"
+        "--image,  -i\t- input filename\n"
+        "--log,    -l\t- enable log\n"
+        "--remove, -r\t- remove source file\n"
         "\nCopyright(c) 2010-2011, D.Gar'kaev aka Dickobraz.\n"
     );
 }
@@ -253,6 +297,11 @@ void parse_opt ( int argc, char **argv ) {
                 filename = strdup ( optarg );
             break;
         }
+        case 'r': {
+            file_remove=true;
+            break;
+        }
+
         case '?':
         default: {
             fprintf ( stderr, "found unknown option\n" );
@@ -361,9 +410,6 @@ void get_imginfo(char * fn, imginfo &ii)
     }
 
     pclose(fin);
-//#ifdef DEBUG
-//printf("pcount=%d\nwidth=%d\nheight=%d\ncsp=%s\nbpp=%d\nxres=%d\nyres=%d\nchannels=%d\n",ii.pcount,ii.width, ii.height,ii.colorspace,ii.bitspp,ii.xres,ii.yres,ii.channels);
-//#endif
 }
 
 void strtrim(char *str, char *s, trim_type t) {
@@ -440,3 +486,10 @@ void set_channels_name(imginfo &ii)
 }
 
 
+size_t get_fsize( const char * szFileName )
+{
+    struct stat fileStat;
+    int err = stat( szFileName, &fileStat );
+    if (0 != err) return 0;
+    return fileStat.st_size;
+}
