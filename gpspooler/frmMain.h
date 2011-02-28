@@ -37,6 +37,8 @@ __published:	// IDE-managed Components
         TCheckBox *cbMinOnExit;
         TPopupMenu *TrayPopupMenu;
         TMenuItem *cmdExit;
+        TLabel *Label1;
+        TEdit *Edit1;
     void __fastcall btnSetEnvClick(TObject *Sender);
     void __fastcall btnDelEnvClick(TObject *Sender);
 
