@@ -18,7 +18,7 @@
 
 == 1. Калибровка: ==
 
-1 Соотношений размеров капель. Пока только визуально - testgenerator + паттерны Роберта Кравитца (Robert Krawitz). Нахождение значений {{{DropSize1}}} и {{{DropSize2}}}.
+1 {{{Соотношений размеров капель}}}. Пока только визуально - testgenerator + паттерны Роберта Кравитца (Robert Krawitz). Нахождение значений {{{DropSize1}}} и {{{DropSize2}}}.
 
 Testpattern для Windows - http://wingp.googlecode.com/files/testpattern.7z - СПАСИБО Владу!
 
