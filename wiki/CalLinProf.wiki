@@ -35,7 +35,7 @@ testpattern.exe <ex2.test >ИмяФайлаВывода_ex2.prn
 
 Далее, посылаем ИмяФайлаВывода_ex2.prn на печать пользую rawprint
 
-(можно unprint этот файл)
+(Можно и unprint ИмяФайлаВывода_ex2.prn - чтоб убедиться в правильности действий до реальной печати на носителе)
 
 Далее, определяем DropSize1 и DropSize2 по верхним шкалам см. картинку ниже
 http://wingp.googlecode.com/files/DropSize%20calibration%2012.12.png
