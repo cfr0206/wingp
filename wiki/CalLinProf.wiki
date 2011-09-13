@@ -23,7 +23,9 @@
 Testpattern для Windows - http://wingp.googlecode.com/files/testpattern.7z - СПАСИБО Владу!
 
 
-Небольшое пояснение надо вручную отредактировать файлы ex2.test и выставить нужное разрешение - 
+Небольшое пояснение:
+
+Необходимо вручную отредактировать файлы ex2.test (имя файла может быть произвольным) и выставить нужное разрешение - 
 ----
 {{{
 parameter "Resolution" "720un";
@@ -33,16 +35,16 @@ parameter "Resolution" "720un";
 
 testpattern.exe <ex2.test >ИмяФайлаВывода_ex2.prn
 
-Далее, посылаем ИмяФайлаВывода_ex2.prn на печать пользую rawprint (http://wingp.googlecode.com/files/rawprint.zip)
+Далее, посылаем ИмяФайлаВывода_ex2.prn на печать пользую rawprint (http://wingp.googlecode.com/files/rawprint.zip).
 
-(Можно и unprint ИмяФайлаВывода_ex2.prn - чтоб убедиться в правильности действий до реальной печати на носителе - ссылка - http://wingp.googlecode.com/files/unprint.zip)
+(Можно и unprint ИмяФайлаВывода_ex2.prn - чтобы убедиться в правильности действий до реальной печати на носителе - ссылка - http://wingp.googlecode.com/files/unprint.zip).
 
-Далее, определяем DropSize1 и DropSize2 по верхним шкалам см. картинку ниже
+Далее, определяем DropSize1 и DropSize2 по верхним шкалам (см. картинку ниже)
 http://wingp.googlecode.com/files/DropSize%20calibration%2012.12.png
 
-Далее, редактируем ex4.test, приводя его в сответствие с ex2.test и печатаем аналогично ex2 
+Далее, редактируем ex4.test, приводя его в сответствие с ex2.test и печатаем аналогично ex2.
 
-Смотрим (см. нижнюю часть картинки выше)
+Смотрим нижнюю часть картинки выше (на картинке небольшое описание).
 
 Вообще, ex4 для контроля правильности значений DS1 и DS2.
 
