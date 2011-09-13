@@ -18,7 +18,9 @@
 
 == 1. Калибровка: ==
 
-1 Соотношений размеров капель. Пока только визуально - testgenerator + паттерны Роберта Кравитца (Robert Krawitz). Нахождение значений {{{DropSize1}}} и {{{DropSize2}}}. Этот этап пока ТОЛЬКО под linux.
+1 Соотношений размеров капель. Пока только визуально - testgenerator + паттерны Роберта Кравитца (Robert Krawitz). Нахождение значений {{{DropSize1}}} и {{{DropSize2}}}. Testpattern lzk Windows http://wingp.googlecode.com/files/testpattern.7z - СПАСИБО Владу!
+http://wingp.googlecode.com/files/DropSize%20calibration%2012.12.png
+
 
 2 Лайтов. (визуально, возможно инструментально - Gplin). Нахождение значений параметров а) {{{Value}}} (виз. или инстр.) б) {{{Transition}}} (виз. в) {{{DensityScale}}} (виз. и/или инстр.)
 
