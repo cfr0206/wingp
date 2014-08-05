@@ -154,5 +154,11 @@ dgarkaev@t-34:~/gutenprint$./autogen.sh
 dgarkaev@t-34:~/gutenprint$make
 dgarkaev@t-34:~/gutenprint$sudo make install
 }}}
-
+Если пакет не собирается из-за отсутствия утилиты yacc, то устанавливаем недостающие пакеты, переконфигурируем и собираем:
+{{{
+dgarkaev@t-34:~/gutenprint$sudo apt-get install bison flex
+dgarkaev@t-34:~/gutenprint$./configure
+dgarkaev@t-34:~/gutenprint$make clean
+dgarkaev@t-34:~/gutenprint$make
+}}}
 ToDo Continue
