@@ -165,4 +165,6 @@ dgarkaev@t-34:~/gutenprint$./configure --without-doc
 dgarkaev@t-34:~/gutenprint$make clean
 dgarkaev@t-34:~/gutenprint$make
 }}}
-ToDo Continue
+
+= Утилита печати gprint =
+...
