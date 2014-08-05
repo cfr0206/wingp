@@ -154,3 +154,5 @@ dgarkaev@t-34:~/gutenprint$./autogen.sh
 dgarkaev@t-34:~/gutenprint$make
 dgarkaev@t-34:~/gutenprint$sudo make install
 }}}
+
+ToDo Continue
