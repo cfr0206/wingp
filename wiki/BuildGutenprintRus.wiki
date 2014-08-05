@@ -1,0 +1,156 @@
+#summary Gutenprint и утилита для печати.
+#labels Phase-Implementation
+
+= Введение =
+
+Собираем пакет Gutenprint и пишем консольную утилиту для печати.
+
+= Сборка пакета =
+На сайте http://gimp-print.sourceforge.net/p_Download.php в самом низу находим команды для получения пакета из репозитория. Выполняем:
+{{{
+cvs -d:pserver:anonymous@gimp-print.cvs.sourceforge.net:/cvsroot/gimp-print login
+cvs -z3 -d:pserver:anonymous@gimp-print.cvs.sourceforge.net:/cvsroot/gimp-print co -P print
+}}}
+
+Для удобства переименовываем print в gutenprint:
+{{{
+mv print gutenprint
+}}}
+
+Запускаем скрипт autogen.sh
+{{{
+./autogen.sh
+}}}
+Смотрим вывод команды. Если есть ошибки о недостающих пакетах - устанавливаем их.
+Пример лога с ошибками:
+{{{
+dgarkaev@t-34:~/gutenprint$ ./autogen.sh
+./autogen.sh: 1: ./scripts/autogen.sh: libtool: not found
+./autogen.sh: 24: test: Illegal number:
+
+**Error**: You must have `autoconf' installed to compile gutenprint.
+Download the appropriate package for your distribution,
+or get the source tarball at ftp://ftp.gnu.org/pub/gnu/
+
+**Error**: You must have `libtool' installed to compile gutenprint.
+Get ftp://ftp.gnu.org/pub/gnu/libtool/libtool-1.5.tar.gz
+(or a newer version if it is available)
+
+**Error**: You must have `pkg-config' installed to compile gutenprint.
+Download the appropriate package for your distribution,
+or get the source tarball at http://www.freedesktop.org/
+
+**Error**: You must have `autopoint' installed to compile gutenprint.
+Get ftp://ftp.gnu.org/pub/gnu/gettext/gettext-0.11.5.tar.gz
+(or a newer version if it is available)
+
+**Error**: You must have `automake' installed to compile gutenprint.
+Get ftp://ftp.gnu.org/pub/gnu/automake/automake-1.7.tar.gz
+(or a newer version if it is available)
+./autogen.sh: 144: test: Illegal number:
+./autogen.sh: 146: test: Illegal number:
+./autogen.sh: 147: test: Illegal number:
+
+***Warning***: You must have "Jade" version 1.2.1 or
+newer installed to build the Gutenprint user's guide.
+Get ftp://ftp.jclark.com/pub/jade/jade-1.2.1.tar.gz
+(or a newer version if available)
+
+./autogen.sh: 201: test: Illegal number:
+./autogen.sh: 202: test: Illegal number:
+
+***Warning***: You must have "OpenJade" version 1.3 or
+newer installed to build the Gutenprint user's guide.
+Get http://download.sourceforge.net/openjade/openjade-1.3.tar.gz
+(or a newer version if available)
+
+./autogen.sh: 1: ./scripts/autogen.sh: sgmltools: not found
+./autogen.sh: 245: test: Illegal number:
+./autogen.sh: 246: test: Illegal number:
+./autogen.sh: 247: test: Illegal number:
+
+***Warning***: You must have "sgmltools-lite" version 3.0.2
+or newer installed to build the Gutenprint user's guide.
+Get http://prdownloads.sourceforge.net/projects/sgmltools-lite/sgmltools-lite-3.0.2.tar.gz
+(or a newer version if available)
+
+
+***Warning***: You must have Docbook v4 installed to
+build the Gutenprint user's guide.
+
+dgarkaev@t-34:~/gutenprint$
+}}}
+В моем случае доустанавливаем пакеты:
+{{{
+dgarkaev@t-34:~/gutenprint$sudo apt-get -y install libtool autoconf pkg-config autopoint automake
+}}}
+
+Запускаем autogen.sh и анализируем вывод скрипта:
+{{{
+dgarkaev@t-34:~/gutenprint$./autogen.sh
+[...]
+Configuration Summary:
+------------- --------
+
+If you have any problems, please report the information below to
+gimp-print-devel@lists.sourceforge.net
+
+================================================================
+  Release: gutenprint 5.2.11-pre1 generated on 05 авг. 2014
+
+  Features:
+    Build CUPS:                                 no
+    Build EPSON inkjet utility:                 yes
+    Build enhanced Print plugin for GIMP:       no
+    Build Ghostscript IJS driver:               no
+    Build Foomatic data:                        no
+    Build test programs:                        yes
+    Build testpattern generator:                yes
+
+  Installation summary:
+    Installation prefix:                        /usr/local
+    Exec prefix:                                /usr/local (${prefix})
+    Data directory:                             /usr/local/share/gutenprint
+    Library directory:                          /usr/local/lib/gutenprint (/usr/local/lib/gutenprint)
+    XML data directory:                         /usr/local/share/gutenprint/5.2/xml
+    Module directory:                           /usr/local/lib/gutenprint/5.2/modules (/usr/local/lib/gutenp                rint/5.2/modules)
+    Install sample images:                      yes
+
+  General configuration:
+    Compiler options:                           -Disfinite=finite  -O6  -Wall -Wcast-align -Wstrict-prototyp                es -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Wwrite-strings -Werror-implicit-function-de                claration -Winline -Wformat=2 -finline-limit=131072 -pedantic -Waggregate-return -Wcast-qual -Wshadow -Wredu                ndant-decls
+    Build static libraries:                     yes
+    Build shared libraries:                     yes
+    Maintainer mode:                            yes
+    Use i18n:                                   yes
+    Generate profiling information:             no
+    Generate debugging symbols:                 no
+    Use modules:                                static
+    Use readline libraries:                     yes
+    uname -a output:                            Linux t-34 3.13.0-24-generic #46-Ubuntu SMP Thu Apr 10 19:08                :14 UTC 2014 i686 athlon i686 GNU/Linux
+================================================================
+[...]
+}}}
+
+Если нужен плагин для GIMP, или планируется использовать GUI для настройки печати, то устанавливаем пакет libgimp2.0-dev. При установке он вытянет и GTK-2.
+{{{
+dgarkaev@t-34:~/gutenprint$sudo apt-get install libgimp2.0-dev
+dgarkaev@t-34:~/gutenprint$./autogen.sh
+[...]
+  Features:
+    Build CUPS:                                 no
+    Build EPSON inkjet utility:                 yes
+    Build enhanced Print plugin for GIMP:       yes
+        GIMP plugin will be named:              gutenprint
+        Install plugin(s) in home directory:    no
+    Build Ghostscript IJS driver:               no
+    Build Foomatic data:                        no
+    Build test programs:                        yes
+    Build testpattern generator:                yes
+[...]
+}}}
+
+Собираем пакет и устанавливаем в систему:
+{{{
+dgarkaev@t-34:~/gutenprint$make
+dgarkaev@t-34:~/gutenprint$sudo make install
+}}}
