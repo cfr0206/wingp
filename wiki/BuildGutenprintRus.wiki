@@ -166,13 +166,30 @@ dgarkaev@t-34:~/gutenprint$make clean
 dgarkaev@t-34:~/gutenprint$make
 }}}
 
+
+
 = Утилита печати gprint (Draft) =
 NB: 
   * dgarkaev@t-34:~/gprint$ ldd ./gprint
   * /etc/ld.so.conf.d/libc.conf
   * sudo ldconfig
+{{{
+Если проблема
+dgarkaev@t-34:~/gprint$./gprint
+./gprint: error while loading shared libraries: libgutenprint.so.2: cannot open shared object file: No such file or directory
+Проверяем:
+dgarkaev@t-34:~/gprint$ ldd ./gprint
+        linux-gate.so.1 =>  (0xb771f000)
+        libgutenprint.so.2 => not found
+        libpthread.so.0 => /lib/i386-linux-gnu/libpthread.so.0 (0xb76f3000)
+        libc.so.6 => /lib/i386-linux-gnu/libc.so.6 (0xb7543000)
+        /lib/ld-linux.so.2 (0xb7720000)
+
+}}}
+
 
 == Makefile ==
+Для начала создадим Makefile:
 {{{
 dgarkaev@t-34:~/gprint$cat ./Makefile
 CC = gcc
@@ -186,7 +203,7 @@ GPCFLAGS =  $(shell pkg-config --cflags gutenprint)
 GPCFLAGSUI =  $(shell pkg-config --cflags gutenprintui2)
 
 PROG = gprint
-all:
+
 all:
         $(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGS) $(GPCFLAGSUI) $(LIBS) $(GPLIBS) $(GPLIBSUI)
 
