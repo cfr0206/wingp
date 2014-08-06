@@ -89,7 +89,7 @@ dgarkaev@t-34:~/gutenprint$sudo apt-get -y install libtool autoconf pkg-config a
 
 Запускаем configure, который нам сгенерил autogen.sh и анализируем вывод скрипта:
 {{{
-dgarkaev@t-34:~/gutenprint$./autogen.sh
+dgarkaev@t-34:~/gutenprint$./configure
 [...]
 Configuration Summary:
 ------------- --------
