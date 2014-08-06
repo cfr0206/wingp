@@ -168,9 +168,9 @@ dgarkaev@t-34:~/gutenprint$make
 
 = Утилита печати gprint (Draft) =
 NB: 
-* dgarkaev@t-34:~/gprint$ ldd ./gprint
-* /etc/ld.so.conf.d/libc.conf
-* sudo ldconfig
+  * dgarkaev@t-34:~/gprint$ ldd ./gprint
+  * /etc/ld.so.conf.d/libc.conf
+  * sudo ldconfig
 
 == Makefile ==
 {{{
@@ -185,6 +185,7 @@ GPCFLAGSUI =  $(shell pkg-config --cflags gutenprintui2)
 
 PROG = gprint
 all:
-<------>$(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGS) $(GPCFLAGSUI) $(GPLIBS) $(GPLIBSUI)
+all:
+        $(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGS) $(GPCFLAGSUI) $(GPLIBS) $(GPLIBSUI)
 
 }}}
