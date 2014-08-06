@@ -87,7 +87,7 @@ dgarkaev@t-34:~/gutenprint$
 dgarkaev@t-34:~/gutenprint$sudo apt-get -y install libtool autoconf pkg-config autopoint automake
 }}}
 
-Запускаем autogen.sh и анализируем вывод скрипта:
+Запускаем configure, который нам сгенерил autogen.sh и анализируем вывод скрипта:
 {{{
 dgarkaev@t-34:~/gutenprint$./autogen.sh
 [...]
