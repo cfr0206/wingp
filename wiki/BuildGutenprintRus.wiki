@@ -168,11 +168,11 @@ dgarkaev@t-34:~/gutenprint$make
 
 = Утилита печати gprint (Draft) =
 NB: 
-- dgarkaev@t-34:~/gprint$ ldd ./gprint
-- /etc/ld.so.conf.d/libc.conf
-- sudo ldconfig
+* dgarkaev@t-34:~/gprint$ ldd ./gprint
+* /etc/ld.so.conf.d/libc.conf
+* sudo ldconfig
 
-
+== Makefile ==
 {{{
 dgarkaev@t-34:~/gprint$cat ./Makefile
 CC = gcc
