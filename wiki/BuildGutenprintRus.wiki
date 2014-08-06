@@ -7,6 +7,7 @@
 Документ пишется в потоковом режиме, поэтому могут быть неточности и избыточность.
 
 = Сборка пакета =
+== Linux ==
 На сайте http://gimp-print.sourceforge.net/p_Download.php в самом низу находим команды для получения пакета из репозитория. Выполняем:
 {{{
 cvs -d:pserver:anonymous@gimp-print.cvs.sourceforge.net:/cvsroot/gimp-print login
