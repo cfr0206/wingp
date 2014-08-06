@@ -194,14 +194,9 @@ dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
 }}}
 
 == Makefile == 
-Создадим Makefile для сборки статической и динамической
-версии утилиты. Разница в том, что если изменить код в Gutenprint, то для
-динамической версии нужно будет пересобрать только библиотеку gutenprint,
-а для статической пересобрать и утилиту gprint. 
+Создадим Makefile для сборки утилиты:
 
 {{{
-TODO: !!!внести изменения в Makefile!!!
-
 dgarkaev@t-34:~/gprint$cat ./Makefile 
 
 CC = gcc
@@ -218,5 +213,23 @@ PROG = gprint
 
 all:
         $(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGS) $(GPCFLAGSUI) $(LIBS) $(GPLIBS) $(GPLIBSUI)
+
+}}}
+
+
+{{{
+#include <gutenprint/gutenprint.h>
+#include <gutenprintui2/gutenprintui.h>
+
+int main( int argc, char* argv[] )
+{
+ stp_init();
+ stp_set_output_codeset( "UTF-8" );
+
+ printf( "Gutenprint library version: %s\n", stp_get_version() );
+ printf( "Available printer models: %d\n", stp_printer_model_count() );
+
+return 0;
+}
 
 }}}
