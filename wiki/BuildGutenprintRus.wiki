@@ -140,7 +140,7 @@ gimp-print-devel@lists.sourceforge.net
 Если нужен плагин для GIMP, или планируется использовать GUI для настройки печати, то устанавливаем пакет libgimp2.0-dev. При установке он вытянет и GTK-2.
 {{{
 dgarkaev@t-34:~/gutenprint$sudo apt-get install libgimp2.0-dev
-dgarkaev@t-34:~/gutenprint$./autogen.sh
+dgarkaev@t-34:~/gutenprint$./configure
 [...]
   Features:
     Build CUPS:                                 no
