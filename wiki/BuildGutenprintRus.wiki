@@ -198,14 +198,14 @@ all:
 Замечание:
 Для компиляции gprint со статической версией библиотеки gutenprint, в pkg-config добавить --static и доустановить 
 пакеты libselinux1-dev и libffi-dev (это в моем случае. У вас могут потребоваться другие пакеты, в зависимости что уже было установленно в систему).
+{{{
+dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
+}}}
+
 Соответствующие строки в Makefile должны выглядеть так:
 {{{
 GPLIBS = $(shell pkg-config --static --libs gutenprint)
 GPLIBSUI = $(shell pkg-config --static --libs gutenprintui2)
-}}}
-
-{{{
-dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
 }}}
 
 Создадим файл gprint.c, подключим библиотеку gutenprint и проверим правильность сборки.
