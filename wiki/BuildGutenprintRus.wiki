@@ -166,10 +166,6 @@ dgarkaev@t-34:~/gutenprint$make clean
 dgarkaev@t-34:~/gutenprint$make
 }}}
 
-Для статики в pkg-config добавить --static и если ругнется на libselinux установить 
-{{{
-dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev
-}}}
 
 = Утилита печати gprint (Draft) =
 NB: ДОБАВИТЬ ПОСЛЕ СБОРКИ gprint
@@ -190,6 +186,10 @@ dgarkaev@t-34:~/gprint$ ldd ./gprint
 
 }}}
 
+Для статики в pkg-config добавить --static и если ругнется на libselinux установить 
+{{{
+dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev
+}}}
 
 == Makefile ==
 Для начала создадим Makefile:
