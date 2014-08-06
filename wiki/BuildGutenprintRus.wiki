@@ -186,9 +186,9 @@ dgarkaev@t-34:~/gprint$ ldd ./gprint
 
 }}}
 
-Для статики в pkg-config добавить --static и если ругнется на libselinux установить 
+Для статики в pkg-config добавить --static и доустановить пакеты libselinux1-dev и libffi-dev (это в моем случае. У вас могут потребоваться другие пакеты, в зависимости что уже было установленно в систему)
 {{{
-dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev
+dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
 }}}
 
 == Makefile ==
