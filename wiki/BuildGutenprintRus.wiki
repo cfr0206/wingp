@@ -81,7 +81,7 @@ build the Gutenprint user's guide.
 
 dgarkaev@t-34:~/gutenprint$
 }}}
-Доустанавливаем пакеты помеченные как **Error**:
+Доустанавливаем пакеты помеченные как `**Error**`:
 {{{
 dgarkaev@t-34:~/gutenprint$sudo apt-get -y install libtool autoconf pkg-config autopoint automake
 }}}
