@@ -191,7 +191,8 @@ dgarkaev@t-34:~/gprint$ ldd ./gprint
 dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
 }}}
 
-== Makefile == Создадим Makefile для сборки статической и динамической
+== Makefile == 
+Создадим Makefile для сборки статической и динамической
 версии утилиты. Разница в том, что если изменить код в Gutenprint, то для
 динамической версии нужно будет пересобрать только библиотеку gutenprint,
 а для статической пересобрать и утилиту gprint. 
