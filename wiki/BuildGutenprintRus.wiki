@@ -199,7 +199,8 @@ dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
 динамической версии нужно будет пересобрать только библиотеку gutenprint,
 а для статической пересобрать и утилиту gprint. 
 
-{{{ TODO: !!!внести изменения в Makefile!!!
+{{{
+TODO: !!!внести изменения в Makefile!!!
 
 dgarkaev@t-34:~/gprint$cat ./Makefile 
 
