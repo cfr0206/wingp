@@ -169,29 +169,8 @@ dgarkaev@t-34:~/gutenprint$make
 
 = Утилита печати gprint (Draft поэтому пока не читаем :) ) =
 
-NB: ДОБАВИТЬ ПОСЛЕ СБОРКИ gprint
-  * dgarkaev@t-34:~/gprint$ ldd ./gprint
-  * /etc/ld.so.conf.d/libc.conf
-  * sudo ldconfig
 
-{{{
-Если проблема
-dgarkaev@t-34:~/gprint$./gprint
-./gprint: error while loading shared libraries: libgutenprint.so.2: cannot open shared object file: No such file or directory
-Проверяем:
-dgarkaev@t-34:~/gprint$ ldd ./gprint
-        linux-gate.so.1 =>  (0xb771f000)
-        libgutenprint.so.2 => not found
-        libpthread.so.0 => /lib/i386-linux-gnu/libpthread.so.0 (0xb76f3000)
-        libc.so.6 => /lib/i386-linux-gnu/libc.so.6 (0xb7543000)
-        /lib/ld-linux.so.2 (0xb7720000)
 
-}}}
-
-Для статики в pkg-config добавить --static и доустановить пакеты libselinux1-dev и libffi-dev (это в моем случае. У вас могут потребоваться другие пакеты, в зависимости что уже было установленно в систему)
-{{{
-dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
-}}}
 
 == Makefile == 
 Создадим Makefile для сборки утилиты:
@@ -216,6 +195,20 @@ all:
 
 }}}
 
+Замечание:
+Для компиляции gprint со статической версией библиотеки gutenprint, в pkg-config добавить --static и доустановить 
+пакеты libselinux1-dev и libffi-dev (это в моем случае. У вас могут потребоваться другие пакеты, в зависимости что уже было установленно в систему).
+Соответствующие строки в Makefile должны выглядеть так:
+{{{
+GPLIBS = $(shell pkg-config --static --libs gutenprint)
+GPLIBSUI = $(shell pkg-config --static --libs gutenprintui2)
+}}}
+
+{{{
+dgarkaev@t-34:/lib$ sudo apt-get install libselinux1-dev libffi-dev
+}}}
+
+Создадим файл gprint.c, подключим библиотеку gutenprint и проверим правильность сборки.
 
 {{{
 #include <gutenprint/gutenprint.h>
@@ -230,5 +223,40 @@ int main( int argc, char* argv[] )
 
 return 0;
 }
+}}}
+
+Собираем командой make и запускаем.
+{{{
+dgarkaev@t-34:~/gprint$./gprint
+./gprint: error while loading shared libraries: libgutenprint.so.2: cannot open shared object file: No such file or directory
+}}}
+Приложение не запустилось, т.к. система не нашла libgutenprint.so.2
+
+Проверим видимость всех библиотек необходимых нашему приложению:
+{{{
+dgarkaev@t-34:~/gprint$ ldd ./gprint
+        linux-gate.so.1 =>  (0xb771f000)
+        libgutenprint.so.2 => not found
+        libpthread.so.0 => /lib/i386-linux-gnu/libpthread.so.0 (0xb76f3000)
+        libc.so.6 => /lib/i386-linux-gnu/libc.so.6 (0xb7543000)
+        /lib/ld-linux.so.2 (0xb7720000)
 
 }}}
+Библиотека libgutenprint.so.2 лежит в /usr/local/lib, но система не видит этого пути. Сконфигурируем пути с помощью команды ldconfig.
+Проверим что в /etc/ld.so.conf.d/libc.conf прописан путь /usr/local/lib. Если нет - добавляем. У меня этот файл выглядит так:
+{{{
+dgarkaev@t-34:/etc/ld.so.conf.d$ cat ./libc.conf
+# libc default configuration
+/usr/local/lib
+}}}
+Пропишем пути загрузки библиотек:
+{{{
+dgarkaev@t-34:~/gprint$ sudo ldconfig
+}}}
+Пробуем еще раз запустить утилиту:
+{{{
+dgarkaev@t-34:~/gprint$ ./gprint
+Gutenprint library version: 5.2.11-pre1
+}}}
+Убеждаемся что все нормально собралось и запустилось.
+
