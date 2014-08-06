@@ -167,7 +167,7 @@ dgarkaev@t-34:~/gutenprint$make
 }}}
 
 
-= Утилита печати gprint (Draft) =
+= Утилита печати gprint (Draft поэтому пока не читаем :) ) =
 NB: ДОБАВИТЬ ПОСЛЕ СБОРКИ gprint
   * dgarkaev@t-34:~/gprint$ ldd ./gprint
   * /etc/ld.so.conf.d/libc.conf
