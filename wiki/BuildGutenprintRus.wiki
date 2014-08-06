@@ -227,7 +227,6 @@ int main( int argc, char* argv[] )
  stp_set_output_codeset( "UTF-8" );
 
  printf( "Gutenprint library version: %s\n", stp_get_version() );
- printf( "Available printer models: %d\n", stp_printer_model_count() );
 
 return 0;
 }
