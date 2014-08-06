@@ -228,7 +228,18 @@ return 0;
 Собираем командой make
 {{{
 dgarkaev@t-34:~/gprint$ make
-gcc gprint.c -o gprint -g3 -Wall -O0 -std=c99 -I/usr/local/include   -pthread -I/usr/local/include -I/usr/include/gtk-2.0 -I/usr/lib/i386-linux-gnu/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 -I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/libpng12 -I/usr/include/harfbuzz    -L/usr/local/lib -lgutenprint -lm   -pthread -L/usr/local/lib -lgutenprintui2 -lgutenprint -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 -lXinerama -lXi -lXrandr -lXcursor -lXcomposite -lXdamage -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lgio-2.0 -lresolv -lselinux -lXfixes -lcairo -lpixman-1 -lxcb-shm -lxcb-render -lXrender -lXext -lX11 -lpthread -lxcb -lXau -lXdmcp -lm -lharfbuzz -lpango-1.0 -lfontconfig -lgmodule-2.0 -ldl -lgobject-2.0 -lffi -lglib-2.0 -lpcre -lexpat -lfreetype -lz -lpng12
+gcc gprint.c -o gprint -g3 -Wall -O0 -std=c99 -I/usr/local/include -pthread 
+-I/usr/local/include -I/usr/include/gtk-2.0 -I/usr/lib/i386-linux-gnu/gtk-2.0/include 
+-I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 
+-I/usr/include/pango-1.0 -I/usr/include/gio-unix-2.0/ -I/usr/include/freetype2 
+-I/usr/include/glib-2.0 -I/usr/lib/i386-linux-gnu/glib-2.0/include -I/usr/include/pixman-1 
+-I/usr/include/libpng12 -I/usr/include/harfbuzz    
+-L/usr/local/lib -lgutenprint -lm   -pthread -L/usr/local/lib -lgutenprintui2 -lgutenprint 
+-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 -lXinerama -lXi -lXrandr -lXcursor 
+-lXcomposite -lXdamage -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lgio-2.0 -lresolv -lselinux 
+-lXfixes -lcairo -lpixman-1 -lxcb-shm -lxcb-render -lXrender -lXext -lX11 -lpthread 
+-lxcb -lXau -lXdmcp -lm -lharfbuzz -lpango-1.0 -lfontconfig -lgmodule-2.0 -ldl -lgobject-2.0 
+-lffi -lglib-2.0 -lpcre -lexpat -lfreetype -lz -lpng12
 }}}
 
 ... и запускаем
@@ -265,4 +276,3 @@ dgarkaev@t-34:~/gprint$ ./gprint
 Gutenprint library version: 5.2.11-pre1
 }}}
 Убеждаемся что все нормально собралось и запустилось.
-
