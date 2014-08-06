@@ -82,7 +82,7 @@ build the Gutenprint user's guide.
 
 dgarkaev@t-34:~/gutenprint$
 }}}
-Доустанавливаем пакеты помеченные как `**Error**`:
+Пакеты помеченные как `**Warning**` можно игнорировать, т.к. они нужны для генерации документации. Доустанавливаем пакеты помеченные как `**Error**`:
 {{{
 dgarkaev@t-34:~/gutenprint$sudo apt-get -y install libtool autoconf pkg-config autopoint automake
 }}}
