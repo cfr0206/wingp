@@ -185,15 +185,13 @@ CC = gcc
 CFLAGS = -g3 -Wall -O0 -std=c99
 LIBS =
 
-GPLIBS = $(shell pkg-config --libs gutenprint)
 GPLIBSUI = $(shell pkg-config --libs gutenprintui2)
-GPCFLAGS =  $(shell pkg-config --cflags gutenprint)
 GPCFLAGSUI =  $(shell pkg-config --cflags gutenprintui2)
 
 PROG = gprint
 
 all:
-        $(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGS) $(GPCFLAGSUI) $(LIBS) $(GPLIBS) $(GPLIBSUI)
+        $(CC) gprint.c -o $(PROG) $(CFLAGS) $(GPCFLAGSUI) $(LIBS) $(GPLIBSUI)
 
 }}}
 
