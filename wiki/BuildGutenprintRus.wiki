@@ -277,4 +277,27 @@ Gutenprint library version: 5.2.11-pre1
 }}}
 Убеждаемся что все нормально собралось и запустилось.
 
-= До 25 августа в отпуске. Продолжу после =
+Добавим вызов GUI.
+{{{
+#include <locale.h>
+#include <gutenprint/gutenprint.h>
+#include <gutenprintui2/gutenprintui.h>
+
+int main( int argc, char* argv[] )
+{
+    stp_init();
+    stp_set_output_codeset( "UTF-8" );
+
+    printf( "Gutenprint library version: %s\n", stp_get_version() );
+
+    gtk_set_locale();
+    setlocale( LC_ALL, "C" );
+    gtk_init( &argc, &argv );
+
+    int runme;
+
+    runme = stpui_do_print_dialog();
+
+return 0;
+}
+}}}
