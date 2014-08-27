@@ -301,3 +301,5 @@ int main( int argc, char* argv[] )
 return 0;
 }
 }}}
+
+Собираем и убеждаемся что приложение запускается и появляется GUI от gutenprint-а.
