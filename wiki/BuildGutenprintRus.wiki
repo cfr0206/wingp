@@ -278,7 +278,7 @@ Gutenprint library version: 5.2.11-pre1
 Убеждаемся что все нормально собралось и запустилось.
 
 ===Вызов GUI gutenprint-а===
-Добавим вызов GUI.
+Добавим вызов GUI. (TODO: добавить параметры изображения и thumnails-callback)
 {{{
 #include <locale.h>
 #include <gutenprint/gutenprint.h>
